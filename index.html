@@ -1,0 +1,2522 @@
+<html>
+  <!-- See also: http://kempe.net/blog/2014/06/14/leaflet-pan-zoom-image.html -->
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css">
+    <link rel="stylesheet" type="text/css" href="css/semantic.css">
+    <link rel="stylesheet" href="css/leaflet-sidebar.css" />
+    <link rel="stylesheet" href="css/leaflet-list-markers.css" />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <style>
+    #image-map {
+      width: 100vw;
+      height: 100vh;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    /* The side navigation menu */
+
+/*.leaflet-control-zoom.leaflet-bar.leaflet-control {
+    margin-top: 80px;
+    margin-left: 12px;
+}*/
+
+@font-face {
+    font-family: "Breathe Fire";
+    src: url("fonts/Breathe-Fire.ttf") format("truetype");
+}
+
+body{ 
+margin: 0; 
+font-family: "Open Sans";
+overflow: hidden;
+}
+
+a {
+    color: #1d569f;
+    cursor: pointer;
+}
+
+i.fa {
+    padding-top: 12px;
+}
+
+.changeMapLink {
+    font-size: 12px;
+    padding-left: 4px;
+}
+
+
+.leaflet-control-attribution {
+    display: none;
+}
+
+.list-markers-li a {
+    color: #000;
+}
+
+div#sidebar {
+    border: 0;
+    border-radius: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.sidebar-content {
+    background-color: #f3f3f3;
+}
+
+.sidebar-tabs {
+    box-shadow: 2px 0px 1px #00000014;
+    z-index: 9999;
+}
+
+.sidebar-pane.not(#place) > .sidebar-header {
+    margin: -10px -20px 0;
+}
+
+/*#sidebar {
+        height: 50vh;
+    min-height: 250px;
+}*/
+
+/*.list-markers.leaflet-control {
+    display: none;
+}
+
+.list-markers.leaflet-control.active {
+    display: block;
+}*/
+
+.leaflet-popup-content {
+    text-align: center;
+    font-size: 24px;
+    width: auto !important;
+    font-family: "Breathe Fire";
+}
+
+
+#image-map .leaflet-top.leaflet-left {
+    left: 44px;
+}
+
+.ui.image.icon-mapPin > img {
+    max-width: 140px;
+    padding: 0px 25px 0px 25px;
+    margin: 0 auto;
+}
+
+i.fa.checkmark {
+    left: auto;
+    bottom: 0;
+    right: 0em;
+    border-radius: 0px;
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
+    -webkit-box-shadow: 1px 0px 0px 0px transparent inset;
+    box-shadow: 1px 0px 0px 0px transparent inset;
+    position: absolute;
+    height: 100%;
+    line-height: 1;
+    border-radius: 0px;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    text-align: center;
+    margin: 0em;
+    width: 2.57142857em;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: '';
+    -webkit-box-shadow: -1px 0px 0px 0px transparent inset;
+    box-shadow: -1px 0px 0px 0px transparent inset;
+}
+
+.markerType {
+    cursor: pointer;
+}
+
+.ui.medium.image.icon-mapPin {width: 140px;}
+
+.markerColumns {
+    width: 100%;
+}
+
+.markerColumns i {
+    padding-right: 8px;
+}
+
+.markerType {
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.storedElementListContainer img.ui.avatar.image,
+.elementListContainer img.ui.avatar.image {
+    width: auto;
+    height: auto;
+    margin-right: 12px;
+}
+
+.markerForm {
+    display: none;
+}
+
+i.fa.noIconPadding {
+    padding-top: 0px;
+}
+
+
+.padded.markerForm {
+    margin-top: 20px;
+}
+
+.elementImage {
+    height: 300px;
+    width: 100%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+.elementImage {
+  display: none;
+}
+
+div#place {
+padding: 0px;
+}
+
+.sidebar-pane {
+    padding-top: 0px;
+}
+
+div#place > h1.sidebar-header > span, div#place .markerTitle, div#place .markerDescription {padding: 10px 20px;}
+
+.ui.placeMenuDivider.divider {
+    margin-top: 65px;
+}
+
+.markerMenu {
+  z-index: 9999 !important;
+}
+
+.ui.right.floated.menu.markerContextMenu {
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 2px;
+}
+
+.markerTitle[contenteditable="true"],
+.markerDescription[contenteditable="true"] {
+    border: 1px solid #d7d7d7;
+}
+
+.leaflet-popup-close-button {
+    display: none;
+}
+
+.inputfile {
+  padding: 25px;
+    display: block;
+    border: 3px dashed #0000000d;
+    cursor: pointer;
+}
+
+label.fileUploadLabel {
+    font-size: 10px;
+    color: #dddddd;
+}
+
+form.fileUploadForm {
+    margin: 50px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.uploadNewMapForm {
+  margin-top: 25px;
+}
+
+.uploadFileButton {
+  cursor: pointer;
+}
+
+.uploadFileButton:hover {
+  background: #f4f4f4;
+}
+
+.uploadFileButton.disabled {
+    pointer-events: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.markerTypeFilter {
+  display: none;
+}
+
+.mapLinkPreviewContainer {
+    margin: 0 auto;
+    margin-bottom: 50px;
+    display: block;
+    width: 60%;
+}
+
+.mapLinkPreview {
+display: block;
+width: 60%;
+}
+
+.mapLinkLabel {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+a.ui.button.upOneLevelButton {
+    margin-top: 20px;
+}
+
+.leaflet-popup.leaflet-zoom-animated {
+    min-width: 200px;
+}
+
+.actions.elementLinkButtons > .deny.button {
+    margin-left: 0px;
+}
+
+.actions.elementLinkButtons {
+    margin-top: 19px;
+}
+
+.mce-tinymce.mce-container {
+    display: none;
+}
+
+iframe#markerDescription_ifr {
+    height: 53vh !important;
+}
+
+.allMarkers {
+    padding: 20px;
+}
+
+img.ui.avatar.map.image {
+    max-width: 34px;
+    border-radius: 0;
+    margin-right: 15px;
+}
+
+#tinymce > p,
+.markerDescription > p {
+    margin-bottom: 16px !important;
+}
+
+
+.showThisMarker, .showAllMarkers {
+    width: 50%;
+}
+
+
+
+
+
+
+/* Add new css above this line */
+
+
+
+@media (max-width: 700px) {
+  .modals.dimmer .ui.scrolling.modal.addMarker {
+    margin-left: 20px;
+    width: 85%;
+}
+}
+
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+    </style>
+  </head>
+  <body>
+
+<div class="ui modal addMarker">
+  <i class="fa fa-close close"></i>
+  <div class="header">
+    Add marker
+  </div>
+  <div class="image content">
+    <div class="ui medium image icon-mapPin">
+      <img src="img/map-pin-icon.png">
+    </div>
+    <div class="markerColumns">
+      <h2 class="ui header">Use an existing element, or create a new one.</h2>
+      <div class="ui vertical stripe segment">
+    <div class="ui equal width stackable internally celled grid">
+        <div class="column">
+          <h3> <i class="fa fa-link"></i> Link existing</h3>
+          <p>Select from existing elements</p>
+          <div class="ui category search markerSearch linkElementSearch">
+  <div class="ui fluid icon input">
+    <input class="prompt" type="text" placeholder="Search people, places things...">
+    <i class="search icon"></i>
+  </div>
+  <div class="results"></div>
+</div>
+        </div>
+        <div class="column">
+          <h3><i class="fa fa-plus"></i> Create new</h3>
+          <p>Add a new element to your map</p>
+          <div class="ui floating labeled icon dropdown button createNewElementDropdown">
+  <i class="add user icon"></i>
+  <span class="text">Add new element...</span>
+  <div class="menu elementDropdownContainer">
+    <div class="header">
+      Elements types on this map
+    </div>
+    <div class="elementTypeContainer"></div>
+    <div class="header containerFooter">
+      Create new element type
+    </div>
+    <div class="item">
+      <i class="fa fa-plus noIconPadding"></i>
+      New element type...
+    </div>
+  </div>
+</div>
+<div class="padded markerForm">
+
+<div class="ui form">
+  <div class="field">
+    <label>Marker title</label>
+    <input class="ui input markerTitleInput">
+  </div>
+<div class="field">
+    <label>Marker description</label>
+    <textarea class="markerDescriptionInput" rows="2"></textarea>
+  </div>
+</div>
+</div>
+<div class="actions elementLinkButtons">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+    <div class="ui positive right labeled icon button addMarkerButton">
+      Add marker
+      <i class="fa fa-map-marker checkmark"></i>
+    </div>
+  </div>
+        </div>
+    </div>
+  </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="ui modal mini createNewWorldmapModal">
+  <i class="fa fa-close close"></i>
+  <div class="header">
+    Create new worldmap
+  </div>
+  
+<div class="content">
+<div class="ui form">
+  
+  <div class="field">
+        <label>Map name</label>
+        <input type="text" name="map-name" class="newWorldmapNameInput" placeholder="Map name">
+      </div>
+  <div class="field">
+    <label>Map description</label>
+    <textarea class="newWorldmapDescriptionInput" placeholder="Map description"></textarea>
+  </div>
+</div>
+
+<form action="uploadMapImage.php" class="uploadNewWorldmapForm" method="post" enctype="multipart/form-data">
+    <label for="newWorldmapToUpload" class="fileUploadLabel"><span>Drag & drop or click to browse...</span></label>
+    <input type="file" name="fileToUpload" id="newWorldmapToUpload" class="inputfile" data-multiple-caption="{count} files selected">
+    <input type="submit" value="Upload Image" name="submit" class="ui segment uploadNewWorldmapButton hidden">
+</form>
+
+</div>
+
+
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+    <div class="ui positive right labeled icon button addWorldmapButton">
+      Add new map
+      <i class="fa fa-map checkmark"></i>
+    </div>
+  </div>
+</div>
+
+<div class="ui modal mini editMapDetailsModal">
+  <i class="fa fa-close close"></i>
+  <div class="header">
+    Edit map details
+  </div>
+  
+<div class="content">
+<div class="ui form">
+  
+  <div class="field">
+        <label>Map name</label>
+        <input type="text" name="map-name" class="editMapNameInput" placeholder="Map name">
+      </div>
+  <div class="field">
+    <label>Map description</label>
+    <textarea class="editMapDescriptionInput" placeholder="Map description"></textarea>
+  </div>
+</div>
+</div>
+
+
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+    <div class="ui positive button editMapButton">
+      Edit map
+    </div>
+  </div>
+</div>
+
+
+
+<div class="ui modal addMapToMarkerModal">
+  <i class="fa fa-close close"></i>
+  <div class="header">
+    Link a map to this marker
+  </div>
+  <div class="image content">
+    <div class="ui medium image icon-mapPin">
+      <img src="img/map-pin-icon.png">
+    </div>
+    <div class="markerColumns">
+      <h2 class="ui header">Use an existing map, or upload a new one.</h2>
+      <div class="ui vertical stripe segment">
+    <div class="ui equal width stackable internally celled grid">
+        <div class="column">
+          <h3> <i class="fa fa-link"></i> Link existing map</h3>
+          <div class="ui category search mapSearch">
+  <div class="ui fluid icon input">
+    <input class="prompt" type="text" placeholder="Search maps...">
+    <i class="search icon"></i>
+  </div>
+  <div class="results"></div>
+</div>
+        </div>
+        <div class="column createNewMapColumn">
+          <h3><i class="fa fa-plus"></i> Create a new map</h3>
+
+          <div class="ui form">
+  
+  <div class="field">
+        <label>Map name</label>
+        <input type="text" name="map-name" class="createNewMapNameInput" placeholder="Map name">
+      </div>
+  <div class="field">
+    <label>Map description</label>
+    <textarea class="createNewMapDescriptionInput" placeholder="Map description"></textarea>
+  </div>
+</div>
+          <form action="uploadMapImage.php" class="uploadNewMapForm" method="post" enctype="multipart/form-data">
+    <label for="newMapToUpload" class="fileUploadLabel"><span>Drag & drop or click to browse...</span></label>
+    <input type="file" name="fileToUpload" id="newMapToUpload" class="inputfile" data-multiple-caption="{count} files selected">
+    <input type="submit" value="Upload Image" name="submit" class="ui segment uploadNewMapButton hidden">
+</form>
+<div class="padded markerForm">
+
+<div class="ui form">
+  <div class="field">
+    <label>Marker title</label>
+    <input class="ui input markerTitleInput">
+  </div>
+<div class="field">
+    <label>Marker description</label>
+    <textarea class="markerDescriptionInput" rows="2"></textarea>
+  </div>
+</div>
+</div>
+        </div>
+    </div>
+  </div>
+    </div>
+
+
+  </div>
+  <div class="mapLinkPreviewContainer hidden">
+    <div class="ui form">
+  <div class="grouped fields">
+    <label for="fruit">Link to existing map, or create a new map with this map image?</label>
+    <div class="field">
+      <div class="ui radio checkbox linkExistingMapToggle">
+        <input type="radio" name="fruit" checked="" tabindex="0" class="hidden">
+        <label>Link to existing map</label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="ui radio checkbox createNewMapToggle">
+        <input type="radio" name="fruit" tabindex="0" class="hidden">
+        <label>Create new map with this image</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui hidden form createNewNestedMapForm">
+  <div class="field">
+        <label>Map name</label>
+        <input type="text" name="first-name" placeholder="Map name" class="createNewMapTitle">
+      </div>
+  <div class="field">
+    <label>Map description</label>
+    <textarea placeholder="Map description" class="createNewMapDescription"></textarea>
+  </div>
+</div>
+
+    <img class="mapLinkPreview">
+  </div>
+</div>
+
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+    <div class="ui positive right labeled icon button addMapButton">
+      Add new map
+      <i class="fa fa-map checkmark"></i>
+    </div>
+  </div>
+</div>
+
+<div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li class="home tab"><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                <li class="map tab"><a href="#map" role="tab"><i class="fa fa-map"></i></a></li>
+                <li class="place tab"><a href="#place" role="tab"><i class="fa fa-map-pin"></i></a></li>
+                <li class="storedElements tab"><a href="#storedElements" role="tab"><i class="fa fa-folder"></i></a></li>
+            </ul>
+
+            <ul role="tablist">
+                <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    <span class="appTitle"></span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+
+                <h2 class="ui header">Start adding markers!</h2>
+
+                <p>Click anywhere on the map to open the marker manager and add a new place/person/thing.</p>
+                <div class="ui divider"></div>
+                
+                <h2 class="markerTypeFilter">
+                <div class="ui dropdown">
+  <div class="text">Everything</div>
+  <i class="dropdown icon"></i>
+  <div class="menu">
+    <div class="item active">Everything</div>
+    <div class="item">People</div>
+    <div class="item">Places</div>
+    <div class="item">Artifacts</div>
+
+  </div>
+</div>
+</h2>
+            </div>
+
+            <div class="sidebar-pane" id="map">
+                <h1 class="sidebar-header">
+                    <span>Current worldmap</span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+
+                <a class="ui button upOneLevelButton hidden"><i class="fa fa-level-up noIconPadding"></i>  Back to parent map</a>
+
+                <h2 class="mapTitle"><div class="ui dropdown">
+  <div class="mapTitleHeader text"></div>
+  <i class="dropdown icon"></i>
+  <div class="menu">
+    <div class="item">
+      <i class="dropdown icon"></i>
+      Change worldmap
+      <div class="menu mapContainer">
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="item createNewWorldmap">New map</div>
+    <div class="item editMapDetails">Edit map details</div>
+    <div class="item disabled">Copy map</div>
+    <div class="divider"></div>
+    <div class="item deleteWorldmap"><i class="trash icon"></i> Delete this worldmap</div>
+  </div>
+</div></h2>
+                <p class="mapDescription"></p>
+                <div class="ui divider"></div>
+
+                <h3>Maps linked to this map</h3>
+                <div class="linkedMapsContainer"></div>
+                
+
+                <div class="mapLayerContainer" style="display: none;">
+                <h3 class="currentMapLayer">
+                    <div class="ui horizontal divider">
+        Current layer
+      </div>
+                    <div class="ui dropdown">
+  <div class="text">Kingdoms</div>
+  <i class="dropdown icon"></i>
+  <div class="menu">
+    <div class="item">
+      <i class="dropdown icon"></i>
+      Change marker layer
+      <div class="menu">
+        <div class="item active">Kingdoms</div>
+        <div class="item">People</div>
+        <div class="item">Combat sites</div>
+        <div class="item">Journey of the Myriad</div>
+        <div class="item">Sacred Shrines</div>
+        <div class="item">Artifacts</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="item">New layer</div>
+    <div class="item">Edit layer description</div>
+    <div class="item">Copy layer</div>
+    <div class="item"><i class="trash icon"></i> Delete layer</div>
+  </div>
+</div>
+                </h3>
+
+                <p>Showing the capital cities of each kingdom in the known civilized Kharlian world.</p>
+                <p>The <b class="currentMarkerLayerTitle">Kingdoms</b> layer of <b class="currentMapLayerTitle">The Kharlian Continents</b> contains the following kinds of markers:</p>
+                <div class="markerTypeContainer">
+                  
+                </div>
+    
+    <div class="markerType createNewMarkerType">
+      <i class="fa fa-plus noIconPadding"></i>
+      New element type...
+    </div>
+ 
+            </div>
+</div>
+            <div class="sidebar-pane" id="place">
+                <h1 class="sidebar-header">
+                    <span>Current marker</span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left noIconPadding"></i></span>
+                </h1>
+
+                <div class="ui large basic buttons" style="
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+">
+  <button class="ui button active showThisMarker">This marker</button>
+  <button class="ui button showAllMarkers">All markers</button>
+</div>
+                <div class="allMarkers hidden">
+                  
+                  <div class="ui category search markerSearch">
+                  <div class="ui fluid icon input">
+                    <input class="prompt" type="text" placeholder="Filter people, places things...">
+                    <i class="filter icon"></i>
+                  </div>
+                  <div class="results"></div>
+                </div>
+                <div class="elementListContainer"></div>
+
+                </div>
+                <div class="currentMarker">
+                <form action="uploadElementImage.php" class="fileUploadForm hidden" method="post" enctype="multipart/form-data">
+    <label for="fileToUpload" class="fileUploadLabel"><span>Drag & drop or click to browse...</span></label>
+    <input type="file" name="fileToUpload" id="fileToUpload" class="inputfile" data-multiple-caption="{count} files selected">
+    <input type="submit" value="Upload Image" name="submit" class="ui segment uploadFileButton hidden">
+</form>
+
+                <div class="elementImage"></div>
+
+        <div class="ui right floated main menu markerContextMenu">
+        <a class="icon item disabled" id="editMarker" title="Edit marker">
+          <i class="edit icon"></i>
+        </a>
+        <a class="icon item active green" id="saveMarkerEdit" title="Edit marker" style="
+    background: #12812c;
+    color: white !important;
+    font-weight: bold;
+    display: none;
+">
+          Save
+        </a><a class="icon item active red" id="cancelMarkerEdit" title="Edit marker" style="
+    background: #ba4747;
+    color: white !important;
+    font-weight: bold;
+    display: none;
+">Cancel</a>
+        <div class="ui language dropdown right floating icon item disabled" id="deleteMarker" title="Put marker in storage">
+          <i class="folder icon"></i>
+        </div>
+      </div>
+
+      <div class="ui right floated main menu markerContextMenu">
+        
+        <div class="ui language dropdown right floating icon item disabled" id="addMapToMarker" title="Link a map">
+          <span class="mapLinkLabel">Map</span>
+        <div class="menu" tabindex="-1"></div>
+        
+      </div>
+      <div class="ui language dropdown right floating icon item hidden" id="unlinkMapButton" title="Unlink nested map">
+          <span class="mapUnlinkLabel">Unlink map</span>
+        <div class="menu" tabindex="-1"></div></div>
+      </div>
+                <!-- <div class="ui placeMenuDivider divider"></div> -->
+                <br><br>
+                <h2 contenteditable="false" class="markerTitle">No marker selected</h2>
+                <!-- <div class="ui fluid right icon input addNewImageLink" style="display: none">
+                <input type="text" placeholder="Add an image link">
+                <i class="image icon"></i> 
+              </div> -->
+                <textarea id="markerDescription" contenteditable="false"></a></textarea>
+                <p class="markerDescription"></p>
+            </div>
+            </div>
+
+
+            <div class="sidebar-pane" id="settings">
+                <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                <h1 class="lorem">Shit what should go on the settings screen</h1>
+            </div>
+        
+        <div class="sidebar-pane" id="storedElements">
+                <h1 class="sidebar-header">
+                    <span class="appTitle"></span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+
+                <h2 class="ui header">Stored elements</h2>
+
+                <p>These are elements you've created that are not currently placed on a map.</p>
+                <p>Click one to delete it, or place it back on the map by clicking "New element" when adding a marker on the map.</p>
+                <div class="ui divider"></div>
+                <div class="storedElementListContainer"></div>
+                <h2 class="markerTypeFilter">
+                
+
+</div>
+            </div>
+    </div>
+
+    
+
+  <div class="ui dropdown">
+    <div class="menu transition markerMenu" tabindex="-1">
+      <div class="item addNewElementButton">New element...</div>
+      <div class="item quickAddButton">Quick-add marker</div>
+      <div class="divider"></div>
+      <div class="item cancelMenuButton">Cancel</div>
+  </div>
+</div>
+
+<div id="image-map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script src="js/leaflet-sidebar.js"></script>
+    
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/semantic.js"></script>
+      <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=0iikpzpie668ykdytq99jv9g87bgpj1hx9jp09ihe7uwbcoy"></script>
+
+    <script>
+
+
+    var appInit = {
+    appTitle: "Cartonomicon (BETA)",
+    mapSource: "/map/api.php/records/maps",
+    markerLayerSource: "/map/api.php/records/marker_layers",
+    markerSource: "/map/api.php/records/markers",
+    limitString: ""
+}
+
+var selectedMapID = window.location.hash.split('/')[1] || ''; //If user is accessing a specific map
+var selectedMarkerID = window.location.hash.split('/')[3] || '';
+
+
+$('#image-map').attr('data-map-id', selectedMapID);
+
+
+var storedMaps;
+var storedMarkerLayers;
+var storedMarkers;
+
+var storedElementsList = [];
+var linkedMapsList = [];
+
+var activeMarkers = [];
+var map; // currently-active map
+
+var markersLayer;
+
+var list; // list to generate listmarkers
+var markerSearchIndex;
+var mapSearchIndex;
+
+function fetchData() {
+
+
+
+
+    //Maps
+    $.ajax({
+        url: appInit.mapSource + appInit.limitString,
+        method: "GET",
+        success: function(data) {
+
+            storedMaps = data.records;
+
+            mapSearchIndex = [];
+
+            for (var i = 0; i < storedMaps.length; i++) {
+                mapSearchIndex.push({
+                    category: "Existing maps",
+                    title: storedMaps[i].title,
+                    _id: storedMaps[i]._id,
+                    mapImageURL: storedMaps[i].mapImageURL
+                })
+            }
+
+
+            //Marker layers
+            $.ajax({
+                url: appInit.markerLayerSource + appInit.limitString,
+                method: "GET",
+                success: function(data) {
+
+                    storedMarkerLayers = data.records
+
+                    if (!selectedMapID) {
+                      selectedMapID = storedMaps[0]._id;
+
+                      window.location.href = '/map/#/' + selectedMapID
+                    }
+
+                    //Markers
+                    $.ajax({
+                        url: appInit.markerSource + "?filter=mapID,eq," + selectedMapID,
+                        method: "GET",
+                        success: function(data) {
+
+                            storedMarkers = data.records
+                            
+
+                            //Loop through markers to get all marker types
+                            var storedElementTypes = [];
+
+                            //Build search index
+                            markerSearchIndex = [];
+                            var customIcons = {}
+
+                            for (var i = 0; i < storedMarkers.length; i++) {
+                                storedMarkers[i].lastLatLng = storedMarkers[i].latLng.split(',');
+                                
+                                storedElementTypes.push(storedMarkers[i].elementType)
+                                markerSearchIndex.push({
+                                    category: storedMarkers[i].elementType ? storedMarkers[i].elementType : "No category",
+                                    title: storedMarkers[i].title,
+                                    _id: storedMarkers[i]._id
+                                })
+                            }
+
+                            // var uniq = new Set(storedElementTypes.map(e => JSON.stringify(e)));
+                            // var res = Array.from(uniq).map(e => JSON.parse(e));
+                            // storedElementTypes = res;
+
+
+
+                            var lastLatLng;
+                            var lastSelectedMarker;
+
+                            //Init the app data
+                            $('.appTitle').text(appInit.appTitle);
+
+
+                            var storedElementTypes = [{
+                                    _id: "1",
+                                    title: "Places",
+                                    safeTitle: "places",
+                                    image: "img/places.png"
+                                },
+                                {
+                                    _id: "2",
+                                    title: "People",
+                                    safeTitle: "people",
+                                    image: "img/people.png"
+                                },
+                                {
+                                    _id: "3",
+                                    title: "Artifacts",
+                                    safeTitle: "artifacts",
+                                    image: "img/artifacts.png"
+                                }
+                            ]
+
+
+                            var activeItem = "";
+                            for (var i = 0; i < storedMaps.length; i++) {
+                                if (storedMaps[i]._id == selectedMapID) {
+                                    mapObject = storedMaps[i];
+                                    activeItem = "active";
+                                }
+
+
+
+                                if (storedMaps[i].mapType == "worldmap") {
+                                var mapItemTemplate = '<a href="/map/#/' + storedMaps[i]._id + '/" class="item ' + activeItem + '" id="' + storedMaps[i]._id + '">' + storedMaps[i].title + '</a>'
+
+                                $('.mapContainer').append(mapItemTemplate);
+                                activeItem = "";
+                              }
+                            
+                            }
+
+                            main(mapObject, storedElementTypes, markerSearchIndex);
+
+
+                        }
+                    });
+
+                }
+            });
+
+        }
+    });
+
+
+}
+
+
+
+function selectActiveMarkerByID(markerID) {
+    for (marker in activeMarkers) {
+        if (activeMarkers[marker].options.id == markerID) {
+            return activeMarkers[marker];
+        }
+    }
+}
+
+function selectMarkerByID(markerID) {
+    for (marker in storedMarkers) {
+        if (storedMarkers[marker]._id == markerID) {
+            return storedMarkers[marker];
+        }
+    }
+}
+
+function main(mapObject, storedElementTypes, markerSearchIndex) {
+
+    if (map) {
+        map.remove();
+    }
+
+
+    function getMenuPosition(mouse, direction, scrollDir) {
+        var win = $(window)[direction](),
+            scroll = $(window)[scrollDir](),
+            menu = $(settings.menuSelector)[direction](),
+            position = mouse + scroll;
+
+        // opening menu would pass the side of the page
+        if (mouse + menu > win && menu < mouse)
+            position -= menu;
+
+        return position;
+    }
+
+
+    //Validate image link
+    function checkURL(url) {
+        return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+    }
+
+
+
+
+    // Using leaflet.js to pan and zoom a big image.
+    // See also: http://kempe.net/blog/2014/06/14/leaflet-pan-zoom-image.html
+    // create the slippy map
+
+    //Get image width and height
+
+    var imageWidth;
+    var imageHeight;
+
+    var img = $("<img />").attr('src', mapObject.mapImageURL)
+        .on('load', function() {
+            if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+                alert('broken image!');
+            } else {
+                imageWidth = img[0].width;
+                imageHeight = img[0].height;
+
+                mapObject.w = imageWidth;
+                mapObject.h = imageHeight;
+            }
+
+
+            console.log(imageWidth, imageHeight)
+
+
+            map = L.map('image-map', {
+                minZoom: -3,
+                maxZoom: 10,
+                center: [imageWidth / 2, imageHeight / 2],
+                zoom: 0,
+                zoomSnap: 0.25,
+                noWrap: true,
+                dragging: true,
+                // boxZoom: true,
+                worldCopyJump: false,
+                dragging: true,
+                tap: false,
+
+                crs: L.CRS.Simple,
+                w: imageWidth,
+                h: imageHeight,
+                url: mapObject.mapImageURL
+            });
+            // dimensions of the image
+            var w = imageWidth,
+                h = imageHeight,
+                url = mapObject.mapImageURL;
+
+            // calculate the edges of the image, in coordinate space
+            
+            var southWest = map.unproject([0, h], map.getMaxZoom() - 1);
+            var northEast = map.unproject([w, 0], map.getMaxZoom() - 1);
+            var bounds = new L.LatLngBounds(southWest, northEast);
+
+            // add the image overlay, 
+            // so that it covers the entire map
+            L.imageOverlay(url, bounds).addTo(map);
+            var sidebar = L.control.sidebar('sidebar').addTo(map);
+
+            // tell leaflet that the map is exactly as big as the image
+            map.fitBounds(bounds);
+
+            if (mapObject.parentMapID) {
+                $('.upOneLevelButton').removeClass('hidden')
+                    .attr('href', '/map/#/' + mapObject.parentMapID);
+            }
+
+            $('.mapTitle .mapTitleHeader.text').text(mapObject.title);
+            $('.mapDescription').text(mapObject.description);
+
+
+
+            markersLayer = new L.LayerGroup(); //layer contain searched elements
+            map.addLayer(markersLayer);
+
+
+
+            map.on("click", function(e) {
+
+                console.log(e)
+
+                lastLatLng = [e.latlng.lat, e.latlng.lng];
+
+                $('.markerMenu').show().css({
+                    position: "absolute",
+                    left: getMenuPosition(e.containerPoint.x, 'width', 'scrollLeft'),
+                    top: getMenuPosition(e.containerPoint.y, 'height', 'scrollTop')
+                })
+
+            });
+
+
+            //Populate element type selection dropdown
+            for (var i = 0; i < storedElementTypes.length; i++) {
+
+
+                var elementTypeTemplate = '<div class="item markerType"> \
+      <img class="ui avatar image" src="' + storedElementTypes[i].image + '"> \
+      <span class="elementID" data-element-safetitle="' + storedElementTypes[i].safeTitle + '" data-element-id="' + storedElementTypes[i]._id + '">' + storedElementTypes[i].title + '</span> \
+    </div>';
+
+                $('.containerFooter').before(elementTypeTemplate);
+                $('.markerTypeContainer').append(elementTypeTemplate);
+
+            }
+
+
+            //Populate existing markers
+            for (var i = 0; i < storedMarkers.length; i++) {
+                var skip = 0;
+
+                if (storedMarkers[i].hasOwnProperty('markerInStorage')) {
+                  if (storedMarkers[i].markerInStorage == 1) {
+                    storedElementsList.push(storedMarkers[i])
+                  skip = 1;
+                }
+                }
+
+                if (storedMarkers[i].childMapID) {
+                  linkedMapsList.push(storedMarkers[i]);
+                }
+
+                if (selectedMapID == storedMarkers[i].mapID && skip == false) {
+                    storedMarkers[i].markerRef = addMarkerData(storedMarkers[i].lastLatLng, storedMarkers[i].description, storedMarkers[i].title, storedMarkers[i].elementType, storedMarkers[i].markerLayer, storedMarkers[i]._id, storedMarkers[i].markerBioImage, storedMarkers[i].mapID, storedMarkers[i].type, storedMarkers[i].childMapID, storedMarkers[i].customMarkerImage);
+                }
+            }
+
+            for (storedElement in storedElementsList) {
+      var elementTemplate = '<div class="markerType" data-marker-id="' + storedElementsList[storedElement]._id + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"></i>' + storedElementsList[storedElement].title + '</div>'
+
+    $('.storedElementListContainer').append(elementTemplate)
+    }
+
+
+    for (linkedMap in linkedMapsList) {
+      var mapTemplate = '<div class="markerType" data-marker-id="'+linkedMapsList[linkedMap]._id+'"><img class="ui avatar map image" src="http://localhost/map/img/map-pin-icon.png">'+linkedMapsList[linkedMap].title+'</div>'
+
+      $('.linkedMapsContainer').append(mapTemplate);
+    }
+
+
+            //Script to control updating the contenteditable fields
+            var title = $('.markerTitle').text();
+            var description = tinymce.activeEditor.getContent();
+            $('.markerTitle, .markerDescription').blur(function() {
+                if ($(this).hasClass('markerTitle') && title != $(this).text()) {
+                    title = $(this).text();
+
+                    var markerID = $('#place').attr('data-marker-id');
+
+                    $.ajax({
+                        url: appInit.markerSource + '/' + markerID,
+                        method: "PUT",
+                        data: {
+                            title: title
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            selectActiveMarkerByID(markerID).options.title = title;
+                            selectActiveMarkerByID(markerID)._popup._content = "<div data-attr-id='" + markerID + "'>" + title + "</div>"
+                        }
+
+                    });
+
+
+                } else if ($(this).hasClass('markerDescription') && description != $(this).html()) {
+                    description = $(this).html();
+
+                    var markerID = $('#place').attr('data-marker-id');
+
+                    $.ajax({
+                        url: appInit.markerSource + '/' + markerID,
+                        method: "PUT",
+                        data: {
+                            description: description
+                        },
+                        success: function(data) {
+                            console.log(data);
+                        }
+
+                    });
+
+                }
+            });
+        });
+
+
+    //Various handlers
+
+    $('body').off();
+
+    $('body').on('click', '.addNewElementButton', function() {
+        $('.sidebar').addClass('collapsed');
+        $('.ui.modal.addMarker').modal('show');
+        $('.markerMenu').hide();
+    })
+
+    $('body').on('click', '.quickAddButton', function() {
+        createMarkerFromLastLatLng("Quick marker", "No description added.");
+        hideMarkerMenu();
+    })
+
+    $('body').on('click', '.mapContainer > .item', function() {
+        window.location.reload();
+    })
+
+    $('body').on('click', '.cancelMenuButton', function() {
+        hideMarkerMenu();
+    })
+
+    $('body').on('click', '.storedElementListContainer > .markerType', function() {
+      var markerID = $(this).attr('data-marker-id');
+        if (confirm("Delete this stored marker forever?")) {
+            deleteMarker(markerID);
+        }
+    })
+
+    $('body').on('click', '#deleteMarker', function() {
+        var markerID = $('#place').attr('data-attr-id');
+        if (confirm("Put this marker back in storage?")) {
+            moveMarkerToStorage(markerID);
+        }
+    })
+
+    $('body').on('mouseover', '.elementListContainer > .markerType', function() {
+        var markerID = $(this).attr('data-marker-id');
+        selectActiveMarkerByID(markerID).openPopup()
+    })
+
+    $('body').on('mouseout', '.markerType', function() {
+        var markerID = $(this).attr('data-marker-id');
+        selectActiveMarkerByID(markerID).closePopup()
+    })
+
+    $('body').on('click', '.markerType', function() {
+        var markerID = $(this).attr('data-marker-id');
+        var markerToSelect = selectActiveMarkerByID(markerID);
+        markerToSelect.options.selectThisMarker();
+        markerToSelect.options.flyTo();
+    })
+
+    $('body').on('click', '#editMarker', function() {
+        toggleEditMode();
+        $('#addMapToMarker').show();
+    })
+
+    $('body').on('click', '#cancelMarkerEdit', function() {
+        toggleEditMode();
+        toggleViewLinkMapButton('on')
+    })
+
+
+    $('body').on('click', '#saveMarkerEdit', function() {
+        var description = tinymce.activeEditor.getContent();
+
+                    var markerID = $('#place').attr('data-marker-id');
+
+                    $.ajax({
+                        url: appInit.markerSource + '/' + markerID,
+                        method: "PUT",
+                        data: {
+                            description: description
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            toggleEditMode();
+                            $('.markerDescription').html(description)
+                            selectActiveMarkerByID(markerID).options.description = description;
+                        }
+
+                    });
+    })
+
+
+    
+
+    $('body').on('click', '.editMapDetails', function() {
+      $('.editMapNameInput').val(mapObject.title)
+      $('.editMapDescriptionInput').val(mapObject.description);
+      $('.editMapDetailsModal').modal('show');
+      $('.mapTitleHeader').text(mapObject.title);
+    })
+
+    $('body').on('click', '.deleteWorldmap', function() {
+      
+      if (confirm("Do you really want to delete " + mapObject.title + "?")) {
+
+        var currentMapID = mapObject._id;
+
+        $.ajax({
+            url: appInit.mapSource + "/" + currentMapID,
+            method: "DELETE",
+            success: function(data) {
+                window.location.href = "/map/#/"
+            }
+
+        });
+      }
+
+    })
+
+    
+
+    $('body').on('click', '.editMapButton', function() {
+
+      var currentMapID = mapObject._id;
+
+      var newMapTitle = $('.editMapNameInput').val();
+      var newMapDescription = $('.editMapDescriptionInput').val();
+      console.log(newMapTitle, newMapDescription)
+
+       $.ajax({
+                    url: appInit.mapSource + "/" + currentMapID,
+                    method: "PUT",
+                    data: {
+                        title: newMapTitle,
+                        description: newMapDescription
+                    },
+                    success: function(data) {
+                      $('.mapTitleHeader').text(newMapTitle);
+                      $('.mapDescription').html(newMapDescription);
+                        console.log(data);
+                        $('.editMapDetailsModal').modal('hide');
+                    }
+                });
+
+
+    })
+
+    
+
+    $('body').on('click', '.createNewWorldmap', function() {
+      $('.createNewWorldmapModal').modal('show');
+    })
+
+    $('body').on('click', '.addWorldmapButton', function() {
+
+      $('.uploadNewWorldmapButton').click();
+
+    })
+
+
+    $('body').on('click', '#unlinkMapButton', function() {
+
+      var markerID = $('#place').attr('data-marker-id');
+
+      $.ajax({
+        url: appInit.markerSource + "/" + markerID,
+        method: "PUT",
+        data: {
+            childMapID: -1
+        },
+        success: function(data) {
+          window.location.reload();
+          }
+    })
+  })
+
+
+    $('body').on('click', '#addMapToMarker', function() {
+
+        var markerID = $('#place').attr('data-marker-id');
+        console.log(selectActiveMarkerByID(markerID));
+        if (selectActiveMarkerByID(markerID).options.childMapID
+            && selectActiveMarkerByID(markerID).options.childMapID !== -1) {
+            var marker = selectActiveMarkerByID(markerID);
+            //Marker has a linked map
+
+            window.location.href = "/map/#/" + marker.options.childMapID;
+            window.location.reload();
+        } else {
+
+            //No map linked - bring up map link modal
+
+            $('.addMapToMarkerModal').attr('data-type', 'nested')
+            $('.addMapToMarkerModal').modal('show');
+
+            $('.createNewMapColumn').show();
+            $('.mapLinkPreviewContainer').addClass('hidden');
+            $('.createNewNestedMapForm').addClass('hidden');
+        }
+    })
+
+    $('body').on('blur', '.addNewImageLink > input ', function() {
+        if ($('.addNewImageLink > input').val().length &&
+            checkURL($('.addNewImageLink > input').val())) {
+
+            updateMarkerImage($('.addNewImageLink > input').val());
+
+        }
+    })
+
+    $('body').on('click', '.createNewMapToggle', function() {
+        $('.addMapToMarkerModal').attr('data-link-action', 'createNew');
+        $('.createNewNestedMapForm').removeClass('hidden');
+    })
+
+    $('body').on('click', '.linkExistingMapToggle', function() {
+        $('.addMapToMarkerModal').attr('data-link-action', 'linkExisting')
+        $('.createNewNestedMapForm').addClass('hidden');
+    })
+
+    $('.fileUploadForm')
+        .submit(function(e) {
+            $.ajax({
+                url: 'uploadElementImage.php',
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function(data) {
+
+                    console.log(data);
+
+                    var result = JSON.parse(data);
+
+                    console.log(result);
+
+                    if (result.type == "error") {
+                        //Something went wrong
+                    } else if (result.type == "success") {
+
+                    }
+
+                    $('.uploadFileButton').addClass('disabled');
+                    var id = $('#place').attr('data-marker-id');
+
+                    $.ajax({
+                        url: appInit.markerSource + "/" + id,
+                        method: "PUT",
+                        data: {
+                            markerBioImage: 'img/element-images/' + result.file
+                        },
+                        success: function(data) {
+
+
+                            setMarkerElementImage('img/element-images/' + result.file);
+                            // $('.addNewImageLink > input').val('');
+                        }
+
+                    });
+
+
+                }
+
+            });
+            e.preventDefault();
+        });
+
+        $('.uploadNewWorldmapForm')
+        .submit(function (e) {
+            $.ajax({
+                url: 'uploadMapImage.php',
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function(data) {
+
+                    console.log(data);
+
+                    var result = JSON.parse(data);
+
+                    console.log(result);
+
+                    if (result.type == "error") {
+                        //Something went wrong
+                    } else if (result.type == "success") {
+
+                    }
+
+                    
+                    var id = $('#place').attr('data-marker-id');
+
+                    var currentMapID = $('#image-map').attr('data-map-id');
+
+                    var newMapTitle = $('.createNewMapNameInput').val();
+                    var newMapDescription = $('.createNewMapDescriptionInput').val();
+
+                    //Add the map to the DB
+                    var currentMapID = mapObject._id;
+
+                    var newMapTitle = $('.newWorldmapNameInput').val();
+                    var newMapDescription = $('.newWorldmapDescriptionInput').val();
+                    console.log(newMapTitle, newMapDescription)
+
+                    $.ajax({
+                    url: appInit.mapSource,
+                    method: "POST",
+                    data: {
+                        title: newMapTitle,
+                        mapImageURL: 'img/maps/' + result.file,
+                        description: newMapDescription,
+                        mapType: "worldmap",
+                        parentMapID: "",
+                        parentMarkerID : ""
+                    },
+                    success: function(data) {
+                      window.location.href = "/map/#/" + data;
+                    }
+                });
+                    
+
+
+                }
+
+            });
+            e.preventDefault();
+        })
+
+
+        
+
+        $('.uploadNewMapForm')
+        .submit(function(e) {
+            $.ajax({
+                url: 'uploadMapImage.php',
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function(data) {
+
+                    console.log(data);
+
+                    var result = JSON.parse(data);
+
+                    console.log(result);
+
+                    if (result.type == "error") {
+                        //Something went wrong
+                    } else if (result.type == "success") {
+
+                    }
+
+                    
+                    var id = $('#place').attr('data-marker-id');
+
+                    var currentMapID = $('#image-map').attr('data-map-id');
+
+                    var newMapTitle = $('.createNewMapNameInput').val();
+                    var newMapDescription = $('.createNewMapDescriptionInput').val();
+
+                    //Add the map to the DB
+                    $.ajax({
+                            url: appInit.mapSource,
+                            method: "POST",
+                            data: {
+                                title: newMapTitle,
+                                mapImageURL: 'img/maps/' + result.file,
+                                description: newMapDescription,
+                                mapType: "nested",
+                                parentMapID: currentMapID,
+                                parentMarkerID: selectedMarkerID
+                            },
+                            success: function(data) {
+                              console.log(data);
+
+                        //Update the marker with the map
+                        $.ajax({
+                        url: appInit.markerSource + "/" + id,
+                        method: "PUT",
+                        data: {
+                            childMapID: data
+                        },
+                        success: function(data) {
+                          window.location.reload();
+                          }
+
+                          });
+
+
+
+                            }
+                        })
+
+                    
+
+
+                }
+
+            });
+            e.preventDefault();
+        });
+
+
+    var inputs = document.querySelectorAll('.fileUploadForm .inputfile');
+    Array.prototype.forEach.call(inputs, function(input) {
+        var label = input.nextElementSibling,
+            labelVal = label.innerHTML;
+
+        input.addEventListener('change', function(e) {
+
+            $('.uploadFileButton').click();
+
+        });
+    });
+
+
+    function toggleViewLinkMapButton(onOff) {
+    
+
+    if (onOff == "on") {
+    
+      if ($('.mapLinkLabel').text() == "View map") {
+        $('#addMapToMarker').show();
+      }
+    
+    } else if (onOff == "off") {
+        $('#addMapToMarker').hide();
+    }
+    
+
+    }
+
+    function toggleUnlinkMapButton(onOff) {
+    
+
+    if (onOff == "on") {
+    
+      if ($('.mapLinkLabel').text() == "View map") {
+        $('#unlinkMapButton').removeClass('hidden');
+      }
+    
+    } else if (onOff == "off") {
+        $('#unlinkMapButton').addClass('hidden');
+    }
+    
+
+    }
+
+
+    function toggleEditMode() {
+        if ($('.markerTitle').attr('contenteditable') == "true") {
+            //Turn off edit mode
+
+            toggleUnlinkMapButton("off")
+            toggleViewLinkMapButton('off')
+
+            $('#saveMarkerEdit, #cancelMarkerEdit').hide();
+            $('#editMarker, #deleteMarker').show();
+
+            
+
+            $('.markerDescription').removeClass('hidden');
+            $('.mce-tinymce').hide();
+
+            $('.fileUploadForm').toggleClass('hidden');
+
+            // $('.addNewImageLink').fadeToggle(); // "Add new image link" field
+            $('.markerTitle').attr('contenteditable', 'false');
+            $('.markerDescription').attr('contenteditable', 'false');
+            $('#editMarker').removeClass('active');
+        } else {
+
+            //Turn on edit mode
+
+
+            
+            var markerID = $('#place').attr('data-marker-id');
+            var description = selectActiveMarkerByID(markerID).options.description
+
+            tinymce.activeEditor.setContent(description);
+
+            toggleUnlinkMapButton("on");
+            toggleViewLinkMapButton("on");
+
+            $('#saveMarkerEdit, #cancelMarkerEdit').fadeIn();
+            $('#editMarker, #deleteMarker').hide();
+            $('.markerDescription').addClass('hidden');
+            $('.mce-tinymce').fadeIn();
+
+            $('.fileUploadForm').toggleClass('hidden');
+            //$('.addNewImageLink').fadeToggle(); // "Add new image link" field
+            $('.markerTitle').attr('contenteditable', 'true');
+            $('.markerDescription').attr('contenteditable', 'true');
+            $('#editMarker').addClass('active');
+        }
+    }
+
+    function updateMarkerImage(imageURL) {
+
+        var markerID = $('#place').attr('data-marker-id');
+
+        if (confirm("Add new image for this marker?")) {
+            $.ajax({
+                url: appInit.markerSource + "/" + markerID,
+                method: "PUT",
+                data: {
+                    markerBioImage: imageURL
+                },
+                success: function(data) {
+                    setMarkerElementImage(imageURL);
+                    // $('.addNewImageLink > input').val('');
+                }
+
+            });
+        }
+    }
+
+    function deleteMarkerByID(id) {
+
+        $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "DELETE",
+            success: function(data) {
+                closeSidebar();
+
+                for (marker in activeMarkers) {
+                    activeMarkers[marker].options.deleteMarker();
+                }
+
+
+                //refreshMarkers();
+                //^ a function to clear the current layer and repopulate with data from the server
+            }
+
+        });
+
+
+    }
+
+    function removeMarkerFromStorage(markerID) {
+      $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "PUT",
+            data: {
+              markerInStorage: 0
+            },
+            success: function(data) {
+                console.log(data, markerID)
+                
+                $('.storedElementListContainer > .markerType[data-marker-id="'+markerID+'"]').remove();
+
+            }
+
+        });
+    }
+
+    function moveMarkerToStorage(id) {
+
+        if (!id) {
+            var markerID = $('#place').attr('data-marker-id');
+        } else {
+            markerID = id;
+        }
+
+        $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "PUT",
+            data: {
+              markerInStorage: 1
+            },
+            success: function(data) {
+                console.log(data, markerID)
+
+                //Remove marker from list of existing elements
+                $('.elementListContainer > .markerType[data-marker-id="'+markerID+'"]').remove();
+
+                //Remove marker from search index
+
+                //Add marker to storage window
+                var elementTemplate = '<div class="markerType" data-marker-id="' + markerID + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"></i>' + selectActiveMarkerByID(markerID).options.title + '</div>'
+
+                    $('.storedElementListContainer').append(elementTemplate)
+
+                lastSelectedMarker.deleteMarker();
+
+            }
+
+        });
+
+
+    }
+
+    function deleteMarker(id) {
+
+        if (!id) {
+            var markerID = $('#place').attr('data-marker-id');
+        } else {
+            markerID = id;
+        }
+
+        $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "DELETE",
+            success: function(data) {
+
+                $('.markerType[data-marker-id="'+markerID+'"]').remove();
+
+                if (selectMarkerByID(markerID).markerInStorage !== 1) {
+                lastSelectedMarker.deleteMarker();
+                }
+                resetMarkerTitleAndDescription();
+                //refreshMarkers();
+                //^ a function to clear the current layer and repopulate with data from the server
+            }
+
+        });
+
+
+    }
+
+    function resetMarkerTitleAndDescription() {
+        $('.markerTitle').text("No marker selected")
+        $('.markerDescription').text('Select a marker on the map, its information will appear in this pane.');
+    }
+
+    function hideMarkerMenu() {
+        $('.markerMenu').hide();
+        $('.markerMenu > .item').removeClass('active');
+    }
+
+
+    function addMarkerData(lastLatLng, description, title, elementType, markerLayer, id, markerBioImage, mapID, type, childMapID, customMarkerImage) {
+
+
+      var customIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png', //'/map/img/brent-l.jpg',
+iconAnchor: [13, 40], 
+popupAnchor: [0, -25] 
+});
+
+
+      // var customIcon = L.icon({
+      //       iconUrl: "https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png",
+      //       iconSize: [60, 60], // size of the icon
+      //       iconAnchor: [5, 50], // point of the icon which will correspond to marker's location
+      //       popupAnchor: [20, -40] // point from which the popup should open relative to the iconAnchor
+      //   });
+
+      // if (customMarkerImage) {
+      //   customIcon = L.icon({
+      //       iconUrl: customMarkerImage,
+      //       iconSize: [60, 60], // size of the icon
+      //       iconAnchor: [5, 50], // point of the icon which will correspond to marker's location
+      //       popupAnchor: [20, -40] // point from which the popup should open relative to the iconAnchor
+      //   });
+      // }
+
+      console.log(customIcon)
+
+        var mp = new L.Marker(lastLatLng, {
+            description: description,
+            title: title,
+            id: id,
+            icon: customIcon,
+            elementType: elementType,
+            draggable: true,
+            lastLatLng: lastLatLng,
+            childMapID: childMapID,
+            markerBioImage: markerBioImage,
+            flyTo: function() {
+                map.flyTo(this.lastLatLng, 9);
+                console.log(this.lastLatLng)
+            },
+            deleteMarker: function() {
+                mp.remove();
+            },
+            selectThisMarker: function() {
+
+                $('.markerMenu').hide();
+
+                $('.currentMarker').removeClass('hidden');
+                $('.allMarkers').addClass('hidden');
+                $('.showThisMarker').addClass('active');
+                $('.showAllMarkers').removeClass('active');
+                
+
+                lastSelectedMarker = this;
+                var marker = this;
+                console.log(marker)
+
+                // Handle sidebar stuff
+                console.log(marker)
+
+                $.ajax({
+                    url: appInit.markerSource + '/' + marker.id,
+                    method: "GET",
+                    success: function(data) {
+
+                        window.location.hash = '#/' + selectedMapID + '/marker/' + marker.id;
+
+                        markerObject = data;
+
+                        var mapImageURL = markerObject.markerBioImage;
+
+
+                        //Retrieve marker info
+                        $('.markerTitle').text(markerObject.title);
+                        $('.markerDescription').html(markerObject.description);
+                        tinymce.activeEditor.setContent(markerObject.description);
+                        $('#place').attr('data-marker-id', markerObject._id);
+                        if (mapImageURL) {
+                            $('.addNewImageLink > input').val(mapImageURL);
+                            console.log(mapImageURL)
+                            setMarkerElementImage(mapImageURL);
+                        } else {
+                            hideMarkerElementImage();
+                            $('.addNewImageLink > input').val('');
+                        }
+
+
+                        if ($('#editMarker').hasClass('disabled')) {
+                            $('#editMarker, #deleteMarker, #addMapToMarker').removeClass('disabled');
+                        }
+
+                        if (type !== "quickMarker") {
+                            openSidebar();
+                        }
+
+
+                    }
+                })
+
+
+                if (childMapID && childMapID !== -1) {
+                $('.mapLinkLabel').text("View map");
+                $('#addMapToMarker').show();
+            } else {
+                $('.mapLinkLabel').text("Link a map");
+                
+            }
+            }
+
+        }).bindPopup("<div data-attr-id='" + id + "'>" + title + "</div>").addTo(markersLayer);
+
+        activeMarkers.push(mp);
+
+
+        if ($('.elementListContainer > .markerType').length <= 50) {
+            var elementTemplate = '<div class="markerType" data-marker-id="' + mp.options.id + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"><span>' + mp.options.title + '</span></div>'
+
+            $('.elementListContainer').append(elementTemplate)
+        }
+
+
+        mp.on('click', function(e) {
+          console.log(e)
+            // selectMarker(e.target, markerBioImage);
+            this.options.selectThisMarker();
+            this.options.flyTo();
+            
+        });
+
+        mp.on('mouseover', function(e) {
+            this.openPopup();
+        });
+
+        mp.on('mouseout', function(e) {
+            this.closePopup();
+        });
+
+        mp.on('dragend', function() {
+
+            //TODO: Update marker latlng after drag end
+
+            if (id) {
+
+                var coord = String(mp.getLatLng());
+                latLngArray = coord.split('(')[1].split(')')[0].split(', ');
+
+                var markerID = id;
+
+                $.ajax({
+                    url: appInit.markerSource + "/" + markerID,
+                    method: "PUT",
+                    data: {
+                        latLng: latLngArray.join()
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        mp.options.lastLatLng = latLngArray;
+                    }
+                });
+
+
+
+
+                mp.options.selectThisMarker();
+            } else {
+                "No ID found for this marker."
+            }
+
+        });
+
+        $('.markerForm').hide();
+        $('.createNewElementDropdown > .text').html("Add new element...")
+        $('.markerTitleInput, .markerDescriptionInput').val('');
+
+        if (selectedMarkerID == id) {
+            mp.options.selectThisMarker();
+            lastSelectedMarker = mp;
+
+            openSidebar();
+        }
+
+        return mp;
+
+    }
+
+
+    function createMarkerFromExistingElement(markerID) {
+      var markerObj = selectMarkerByID(markerID);
+
+
+      addMarkerData(lastLatLng, markerObj.description, markerObj.title, markerObj.elementType, markerObj.markerLayer, markerObj._id, markerObj.markerBioImage, markerObj.currentMapID, markerObj.childMapID)
+    }
+
+    function createMarkerFromLastLatLng(title, description, markerBioImage) {
+        if (title) {
+            // var mp = new L.Marker(lastLatLng, {
+            //     description: description,
+            //     title: title,
+            //     draggable: true
+            // }).bindPopup("<b>" + title + "</b>").addTo(markersLayer);
+
+            //Get attributes from the currently-selected element type dropdown.
+            var elementTypeTitle = $('.createNewElementDropdown > .text > .elementID').text();
+            var elementTypeSafeTitle = $('.createNewElementDropdown > .text > .elementID').attr('data-element-safetitle');
+            var elementTypeImage = $('.createNewElementDropdown > .text > img').attr('src');
+            var elementType = 0;
+
+            var currentMapID = $('#image-map').attr('data-map-id');
+            markerBioImage = markerBioImage ? markerBioImage : "";
+
+            var markerLayer = ""; // Should be the ID of the current marker layer
+            var id = "";
+            var childMapID = "";
+
+            $.ajax({
+                url: appInit.markerSource + "/",
+                method: "POST",
+                data: {
+                    "mapID": parseInt(currentMapID),
+                    "latLng": lastLatLng.join(),
+                    "title": title,
+                    "customMarkerImage": "",
+                    "markerLayerID" : 0,
+                    "description": description,
+                    "elementTypeID": elementType,
+                    "markerBioImage": markerBioImage,
+                    "markerInStorage" : 0
+                },
+                success: function(data) {
+                    console.log(data);
+                    addMarkerData(lastLatLng, description, title, elementType, markerLayer, data, markerBioImage, currentMapID, childMapID)
+
+                    $('.markerTitle').text(title);
+                    $('.markerDescription').html(description);
+                    tinymce.activeEditor.setContent(description);
+                    $('#place').attr("data-marker-id", data);
+
+                    if (!markerBioImage) {
+                        hideMarkerElementImage();
+                    }
+
+                    closeSidebar();
+
+                }
+
+            });
+
+
+        }
+
+    }
+
+    function hideMarkerElementImage() {
+      $('.elementImage').hide();
+      $('.elementImage').css('background-image', 'url()');
+    }
+
+    function setMarkerElementImage(mapImageURL) {
+      $('.elementImage').show();
+      $('.elementImage').css('background-image', 'url(' + encodeURI(mapImageURL) + ')');
+    }
+
+    function selectMarker(marker, mapImageURL) {
+
+      console.log(marker)
+
+        $('.markerMenu').hide();
+
+        lastSelectedMarker = marker;
+
+
+        // Handle sidebar stuff
+        console.log(marker)
+
+        $.ajax({
+            url: appInit.markerSource + "/" + marker.options.id,
+            method: "GET",
+            success: function(data) {
+
+                window.location.hash = '#/' + selectedMapID + '/marker/' + marker.options.id;
+
+                markerObject = data;
+                markerObject.lastLatLng = markerObject.latLng.split(',');
+
+                var mapImageURL = markerObject.markerBioImage;
+
+
+                //Retrieve marker info
+                $('.markerTitle').text(markerObject.title);
+                $('.markerDescription').html(markerObject.description);
+                tinymce.activeEditor.setContent(markerObject.description);
+                $('#place').attr('data-marker-id', markerObject._id);
+                if (mapImageURL) {
+                    $('.addNewImageLink > input').val(mapImageURL);
+                    setMarkerElementImage(mapImageURL);
+                } else {
+                    hideMarkerElementImage();
+                    $('.addNewImageLink > input').val('');
+                }
+
+
+                if ($('#editMarker').hasClass('disabled')) {
+                    $('#editMarker, #deleteMarker, #addMapToMarker').removeClass('disabled');
+                }
+                closeSidebar();
+
+            }
+        })
+
+
+
+    }
+
+    function updateDescription() {
+      var markerID = $('#place').attr('data-marker-id');
+      var description = tinymce.activeEditor.getContent();
+      $.ajax({
+                        url: appInit.markerSource + '/' + markerID,
+                        method: "PUT",
+                        data: {
+                            description: description
+                        },
+                        success: function(data) {
+                            console.log(data);
+                        }
+
+                    });
+    }
+
+    function closeSidebar() {
+
+        //Open the sidebar if it is closed
+        $('.sidebar').addClass('collapsed');
+        window.location.hash = '#/' + selectedMapID;
+        $('.sidebar-pane').addClass('active');
+        $('.sidebar-pane#place').removeClass('active');
+    }
+
+    function openSidebar() { // Opens the sidebar to the "place" tab
+        $('.sidebar-pane').removeClass('active');
+        $('.tab').removeClass('active');
+
+        $('.tab.place').addClass('active');
+        $('.sidebar-pane#place').addClass('active');
+        //Open the sidebar if it is closed
+        $('.sidebar').removeClass('collapsed');
+
+        if ($('#place').attr('data-marker-id')) {
+            window.location.hash = '#/' + selectedMapID + '/marker/' + $('#place').attr('data-marker-id');
+        }
+    }
+
+    function switchToSidebarTab(tabClass) {
+      $('.tab').removeClass('active');
+      $('.'+tabClass).addClass('active');
+    }
+
+    // map.on('click', function(e){
+    //   var coord = e.latlng;
+    //   var lat = coord.lat;
+    //   var lng = coord.lng;
+    //   console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+    //   });
+
+
+
+
+    // var myMarker = L.marker([-4.33984375, 4.609375], {title: "MyPoint", alt: "The Big I", draggable: true})
+    // .addTo(markersLayer)
+    // .on('dragend', function() {
+    //     var coord = String(myMarker.getLatLng()).split(',');
+    //     console.log(coord);
+    //     var lat = coord[0].split('(');
+    //     console.log(lat);
+    //     var lng = coord[1].split(')');
+    //     console.log(lng);
+    //     myMarker.bindPopup("Moved to: " + lat[1] + ", " + lng[0] + ".");
+    // });
+
+
+
+    // list = new L.Control.ListMarkers({
+    //     layer: markersLayer,
+    //     itemIcon: null
+    // });
+    // map.addControl(list);
+
+
+
+
+    /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main").style.marginLeft = "250px";
+        document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    }
+
+    /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLeft = "0";
+        document.body.style.backgroundColor = "white";
+    }
+
+
+    //UI Initialization
+    $('.dropdown').dropdown();
+    $('.ui.radio.checkbox').checkbox();  
+
+
+    $('body').on('click', '.showThisMarker', function() {
+        $(this).addClass('active');
+        $('.showAllMarkers').removeClass('active');
+
+        $('.currentMarker').removeClass('hidden');
+        $('.allMarkers').addClass('hidden');
+    });
+
+    $('body').on('click', '.showAllMarkers', function() {
+        $(this).addClass('active');
+        $('.showThisMarker').removeClass('active');
+        
+        $('.currentMarker').addClass('hidden');
+        $('.allMarkers').removeClass('hidden');
+    });
+
+    $('body').on('click', '.createNewElementDropdown .item', function() {
+        $('.markerForm').show();
+    });
+
+    //When clicking to add a new marker
+    $('.addMarkerButton').click(function() {
+
+        var title = $('.markerTitleInput').val();
+        var description = $('.markerDescriptionInput').val();
+        createMarkerFromLastLatLng(title, description)
+    })
+
+
+
+
+    $('.addMapButton').click(function() {
+        var mapType = $('.addMapToMarkerModal').attr('data-type'); //nested or worldmap
+        var linkAction = $('.addMapToMarkerModal').attr('data-link-action'); //createNew or linkExisting
+        var selectedMarkerID = $('#place').attr('data-marker-id');
+
+        if (mapType == "nested") {
+            //We're linking a map to a marker
+
+
+
+            if (linkAction == "createNew") {
+
+                var newMapTitle = $('.createNewMapTitle').val();
+                var newMapDescription = $('.createNewMapDescription').val();
+                var currentMapID = $('#image-map').attr('data-map-id');
+                var mapImageURL = $('.mapLinkPreview').attr('src');
+                var existingMapID = $('.addMapToMarkerModal').attr('existing-map-id'); //id of existing map to link
+
+                $.ajax({
+                    url: appInit.mapSource + "/" + existingMapID,
+                    method: "GET",
+                    success: function(data) {
+                        console.log(data);
+
+                        $.ajax({
+                            url: appInit.mapSource,
+                            method: "POST",
+                            data: {
+                                title: newMapTitle,
+                                mapImageURL: data.mapImageURL,
+                                description: newMapDescription,
+                                mapType: "nested",
+                                parentMapID: currentMapID,
+                                parentMarkerID: selectedMarkerID
+                            },
+                            success: function(data) {
+
+
+                            }
+                        })
+
+                        $.ajax({
+                            url: appInit.mapSource,
+                            method: "POST",
+                            data: {
+                                title: newMapTitle,
+                                mapImageURL: mapImageURL,
+                                description: newMapDescription,
+                                mapType: "nested",
+                                parentMapID: currentMapID,
+                                parentMarkerID: selectedMarkerID
+                            },
+                            success: function(data) {
+
+
+                                $.ajax({
+                                    url: appInit.markerSource + "/" + selectedMarkerID,
+                                    method: "PUT",
+                                    data: {
+                                        childMapID: data
+                                    },
+                                    success: function(data) {
+                                        console.log(data);
+                                    }
+
+                                });
+
+
+                                $('.addMapToMarkerModal').modal('hide');
+                            }
+                        });
+                    }
+                })
+
+
+
+            } else if (linkAction == "linkExisting") {
+
+
+                var existingMapID = $('.addMapToMarkerModal').attr('existing-map-id'); //id of existing map to link
+                var currentMapID = $('#image-map').attr('data-map-id');
+                var mapImageURL = $('.mapLinkPreview').attr('src');
+                var markerID = $('#place').attr('data-marker-id');
+
+                $.ajax({
+                        url: appInit.markerSource + "/" + markerID,
+                        method: "PUT",
+                        data: {
+                            childMapID: existingMapID
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            selectActiveMarkerByID(markerID).options.childMapID = existingMapID;
+                            $('.mapLinkLabel').text("View map");
+                            $('#addMapToMarker').show();
+                        }
+
+                    });
+
+
+            } else {
+              if ($('.createNewMapNameInput').val().length) {
+                //Trigger the upload chain
+                $('.uploadNewMapButton').click()
+              }
+            }
+
+        } else if (mapType == "worldmap") {
+            //We're adding a new worldmap
+
+        }
+
+    })
+
+    $('.ui.search.markerSearch')
+        .search({
+            type: 'category',
+            source: markerSearchIndex,
+            onSelect: function(result) {
+              console.log(result);
+              if ($(this).hasClass('linkElementSearch') == false) {
+                console.log("No link elment search")
+                selectActiveMarkerByID(result._id).options.selectThisMarker()
+                selectActiveMarkerByID(result._id).options.flyTo()
+              } else { // We're selecting the element in the search box, close it
+                $('.addMarker').modal('hide');
+                $('.addMarker .prompt').val('');
+                var markerObj = selectMarkerByID(result._id);
+                console.log(markerObj)
+
+                removeMarkerFromStorage(result._id); 
+
+                createMarkerFromExistingElement(result._id);
+                resetMarkerTitleAndDescription();
+                switchToSidebarTab('storedElements')
+               
+              }
+            }
+        });
+
+    $('.ui.search.mapSearch')
+        .search({
+            type: 'category',
+            source: mapSearchIndex,
+            onSelect: function(result) {
+                console.log(result);
+                $('.createNewMapColumn').hide();
+                $('.addMapToMarkerModal').attr('data-link-action', 'linkExisting').attr('existing-map-id', result._id);
+                $('.mapLinkPreviewContainer').removeClass('hidden');
+                $('.mapLinkPreview').attr('src', result.mapImageURL);
+            }
+        });
+
+
+
+
+
+
+
+
+
+    //Use this to get the size of an image without appending it to the DOM.
+
+    // var img = $("<img />").attr('src', 'http://localhost/map/img/artifacts.png')
+    //     .on('load', function() {
+    //         if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
+    //             alert('broken image!');
+    //         } else {
+    //             console.log(img[0].width, img[0].height)
+    //         }
+    //     });
+
+
+
+
+tinymce.init({
+  selector: '#markerDescription',
+  content_style: "body#tinymce > p {margin-bottom: 16px !important;}",
+  init_instance_callback: function (editor) {
+    editor.on('blur', function (e) {
+      console.log('Editor was blurred!');
+    });
+  }
+});
+
+
+
+}
+
+    
+fetchData();
+
+window.onhashchange = function() {
+    if (window.location.hash.split('/')[1] !== selectedMapID) {
+        window.location.reload();
+    } else {
+      if (window.location.hash.split('/')[3]) {
+        selectActiveMarkerByID(window.location.hash.split('/')[3]).options.selectThisMarker();
+        selectActiveMarkerByID(window.location.hash.split('/')[3]).options.flyTo()
+      }
+    }
+}</script>
+
+    <script src="js/leaflet-list-markers.js"></script>
+
+
+  </body>
+</html>
