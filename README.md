@@ -1,3 +1,5 @@
+![Introduction to Cartonomicon](https://media.giphy.com/media/37r9LSUFNHUlPxRsSj/giphy.gif)
+
 Cartonomicon is a web app built on Apache, MySQL, PHP. It uses a basic PHP file upload for maps, artwork, and custom marker images. There is a basic image management script at `localhost/img/` to handle asset management.
 
 # Back the project on [Patreon](https://www.patreon.com/cartonomicon)!
@@ -10,6 +12,8 @@ Hey! I'm Dave, a D&D nerd who builds worldbuilding web apps. By night, I paint d
 I developed Cartonomicon as an open source tool when I realized the power and utility in being able to upload, mark and share an annotated map or image with my players. I'd never really found a great tool to organize the points of interest and all the related information of my world, such as first-person descriptors, art, and other details.
 
 I hope it is as useful to you as it has been for me! [Join the exclusive Cartonomicon](https://www.patreon.com/cartonomicon) community to get access to up-to-the-minute details about the app's development, including any closed betas, feature planning, and more!
+
+![Introduction to Cartonomicon](https://media.giphy.com/media/fGObDa56t6JVtt2BHK/giphy.gif)
 
 # Installation instructions
 
