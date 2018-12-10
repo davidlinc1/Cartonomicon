@@ -1296,10 +1296,10 @@ p.categoryContainer {
 
     var appInit = {
     appTitle: "Cartonomicon (BETA)",
-    mapSource: "/map/api.php/records/maps",
-    markerLayerSource: "/map/api.php/records/marker_layers",
-    markerSource: "/map/api.php/records/markers",
-    wikiCategorySource: "/map/api.php/records/wiki_categories",
+    mapSource: "/api.php/records/maps",
+    markerLayerSource: "/api.php/records/marker_layers",
+    markerSource: "/api.php/records/markers",
+    wikiCategorySource: "/api.php/records/wiki_categories",
     limitString: ""
 }
 
@@ -1375,7 +1375,7 @@ function fetchData() {
                     if (!selectedMapID) {
                       selectedMapID = storedMaps[0]._id;
 
-                      window.location.href = '/map/#/' + selectedMapID
+                      window.location.href = '#/' + selectedMapID
                     }
 
                     populateMarkerLayers(storedMarkerLayers);
@@ -1464,7 +1464,7 @@ function fetchData() {
 
 
                                 if (storedMaps[i].mapType == "worldmap") {
-                                var mapItemTemplate = '<a href="/map/#/' + storedMaps[i]._id + '/" class="item ' + activeItem + '" id="' + storedMaps[i]._id + '">' + storedMaps[i].title + '</a>'
+                                var mapItemTemplate = '<a href="#/' + storedMaps[i]._id + '/" class="item ' + activeItem + '" id="' + storedMaps[i]._id + '">' + storedMaps[i].title + '</a>'
 
                                 $('.mapContainer').append(mapItemTemplate);
                                 activeItem = "";
@@ -1678,7 +1678,7 @@ config.dataCallback = dataCallback;
 
 config.itemTemplate = '<li data-id="{id}">{title}</li>';
 
-config.outputTemplate = '<a href="/map/#/'+selectedMapID+'/marker/{id}">{title}</a> ';
+config.outputTemplate = '<a href="#/'+selectedMapID+'/marker/{id}">{title}</a> ';
 
 new CKEDITOR.plugins.autocomplete( CKEDITOR.instances.articleContent, config );
 new CKEDITOR.plugins.autocomplete( CKEDITOR.instances.markerDescription, config );
@@ -2165,7 +2165,7 @@ function populateAllMarkersMenu(markerArray) {
 
 
     for (linkedMap in linkedMapsList) {
-      var mapTemplate = '<div class="markerType" data-marker-id="'+linkedMapsList[linkedMap]._id+'"><img class="ui avatar map image" src="http://localhost/map/img/map-pin-icon.png">'+linkedMapsList[linkedMap].title+'</div>'
+      var mapTemplate = '<div class="markerType" data-marker-id="'+linkedMapsList[linkedMap]._id+'"><img class="ui avatar map image" src="img/map-pin-icon.png">'+linkedMapsList[linkedMap].title+'</div>'
 
       $('.linkedMapsContainer').append(mapTemplate);
     }
@@ -2776,7 +2776,7 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
 
             if (mapObject.parentMapID) {
                 $('.upOneLevelButton').removeClass('hidden')
-                    .attr('href', '/map/#/' + mapObject.parentMapID);
+                    .attr('href', '#/' + mapObject.parentMapID);
             }
 
             $('.mapTitle .mapTitleHeader.text').text(mapObject.title);
@@ -3498,7 +3498,7 @@ $('#articleContent').attr('contenteditable', 'false');
             url: appInit.mapSource + "/" + currentMapID,
             method: "DELETE",
             success: function(data) {
-                window.location.href = "/map/#/"
+                window.location.href = "#/"
             }
 
         });
@@ -3573,7 +3573,7 @@ $('#articleContent').attr('contenteditable', 'false');
             var marker = selectActiveMarkerByID(markerID);
             //Marker has a linked map
 
-            window.location.href = "/map/#/" + marker.options.childMapID;
+            window.location.href = "#/" + marker.options.childMapID;
             window.location.reload();
         } else {
 
@@ -3703,7 +3703,7 @@ $('#articleContent').attr('contenteditable', 'false');
                         parentMarkerID : ""
                     },
                     success: function(data) {
-                      window.location.href = "/map/#/" + data;
+                      window.location.href = "#/" + data;
                     }
                 });
                     
