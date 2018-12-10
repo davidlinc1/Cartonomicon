@@ -1294,12 +1294,16 @@ p.categoryContainer {
     <script>
 
 
+      var pathname = window.location.pathname;
+      if (pathname == "/") {pathname = ""};
+      console.log(pathname)
+
     var appInit = {
     appTitle: "Cartonomicon (BETA)",
-    mapSource: "/api.php/records/maps",
-    markerLayerSource: "/api.php/records/marker_layers",
-    markerSource: "/api.php/records/markers",
-    wikiCategorySource: "/api.php/records/wiki_categories",
+    mapSource: pathname + "api.php/records/maps",
+    markerLayerSource: pathname + "api.php/records/marker_layers",
+    markerSource: pathname + "api.php/records/markers",
+    wikiCategorySource: pathname + "api.php/records/wiki_categories",
     limitString: ""
 }
 
