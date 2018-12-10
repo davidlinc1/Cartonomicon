@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="css/leaflet-sidebar.css" />
     <link rel="stylesheet" href="css/leaflet-list-markers.css" />
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /> -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+
     <style>
     #image-map {
       width: 100vw;
@@ -63,6 +66,7 @@ div#sidebar {
     top: 0;
     bottom: 0;
     left: 0;
+    z-index: 9998;
 }
 
 .sidebar-content {
@@ -203,8 +207,15 @@ div#place > h1.sidebar-header > span, div#place .markerTitle, div#place .markerD
 
 .ui.right.floated.menu.markerContextMenu {
     margin-right: 10px;
-    margin-top: 10px;
     margin-bottom: 2px;
+}
+
+.ui.right.floated.menu.markerContextMenu.editMarkerToolbar {
+	margin-top: 10px;
+}
+
+.articleTitleHeader {
+    margin: 0px;
 }
 
 .markerTitle[contenteditable="true"],
@@ -290,7 +301,7 @@ a.ui.button.upOneLevelButton {
     margin-top: 19px;
 }
 
-.mce-tinymce.mce-container {
+#cke_markerDescription {
     display: none;
 }
 
@@ -318,7 +329,164 @@ img.ui.avatar.map.image {
     width: 50%;
 }
 
+p.markerDescription img {
+    max-width: 100%;
+}
 
+.cke_inner.cke_reset.cke_maximized {
+    z-index: 9999 !important;
+}
+
+.markerLayerLabel {
+    position: relative;
+    display: inline-block;
+    top: 10px;
+}
+
+div#markerLayers .item {
+    padding: 10px;
+    padding-right: 0px;
+}
+
+div#markerLayers .item:hover {
+    background: rgba(255, 255, 255, 0.35);
+    cursor:pointer;
+}
+
+.ui.newCategory {
+    border: 2px dashed #d0d0d0;
+    padding: 7px;
+    margin: 14px;
+}
+
+div#storedElements {
+    padding: 0;
+}
+
+#storedElements > .ui.header, #storedElements p {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+div#storedElements .appTitle {
+    padding-left: 20px;
+}
+
+.ui.list.markerListContainer {
+    padding-left: 20px;
+    padding-bottom: 12px;
+}
+
+.categoryContainer i {
+    color: #7c7c7c;
+}
+
+.categoryContainer p {
+    font-weight: bold;
+}
+
+.ui.list.markerListContainer .header {
+    font-weight: 300;
+}
+
+.wikiContainer {
+    padding: 20px;
+}
+
+.wikiContainer .item > .header {
+    font-weight: 400;
+}
+
+.categoryDropdown, .subcategoryDropdown {
+  cursor: pointer;
+}
+
+p.subcategoryDropdown {
+    padding-top: 10px;
+}
+
+.wikiContainer p {
+    margin: auto;
+    padding: unset;
+}
+
+#storedElements > .ui.header, #storedElements p, .wikiContainer .item > .header {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.subcategoryDropdown.open {
+    margin-bottom: 8px;
+}
+
+p.categoryContainer {
+    margin-bottom: 4px;
+}
+
+.wikiContainer .addNew i.fa.fa-trash {
+    color: #b01825;
+    padding-right: 4px;
+}
+
+.wikiContainer .addNew > .header, .wikiContainer .addNew i {
+    color: #0074d9;
+}
+.wikiContainer .addNew > .header {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 11px;
+    margin-top: 5px;
+    margin-bottom: 14px;
+    
+}
+
+.categoryDropdown.open > .item, .subcategoryDropdown.open > .item, .categoryContainer > .item {
+    padding-left: 28px;
+}
+
+.subcategoryItem {
+    cursor: pointer;
+}
+
+.subcategoryItem:hover {
+    background: #e8e8e8;
+}
+.subcategoryItem.active {
+    background: gainsboro;
+}
+
+.articleContent {
+    margin: 25px;
+    margin-top: 45px;
+    padding: 18px;
+}
+
+.modals.dimmer .ui.modal.wikiArticleModal {
+    width: calc(100% - 460px);
+    margin-left: 230px;
+    overflow-y: scroll;
+    height: 100vh;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px !important;
+}
+
+.ui.dimmer.modals.page.transition.visible.active {
+    padding-top: 0px;
+}
+
+.ui.newCategory:hover {
+    background: gainsboro;
+    cursor: pointer;
+}
+
+#cke_articleContent:not(.visibleModal) {
+  display: none !important;
+}
+
+.markerLayersList > .item.active {
+    background: #e8f1f8 !important;
+}
 
 
 
@@ -343,6 +511,179 @@ img.ui.avatar.map.image {
     </style>
   </head>
   <body>
+
+<div class="ui mini modal createNewMarkerLayerModal scrolling">
+  <i class="fa fa-close close"></i>
+  <div class="header">
+      Create new marker layer
+    </div>
+  <div class="newWikiElementContent content">
+    <p>Name your marker layer. Then, edit markers to add them to this layer.</p>
+    <div class="ui fluid input">
+  <input type="text" placeholder="New layer name...">
+</div>
+  </div>
+  <div class="actions">
+      <div class="ui negative button">
+        Cancel
+      </div>
+      <div class="ui positive right labeled icon button addNewMarkerLayerButton">
+        Add
+        <i class="checkmark icon"></i>
+      </div>
+    </div>
+</div>
+
+<div class="ui mini modal createNewWikiArticle scrolling">
+  <i class="fa fa-close close"></i>
+  <div class="header">
+      Create new encyclopedia article
+    </div>
+  <div class="newWikiElementContent content">
+    <p>Enter a new article name. You can then edit the content.</p>
+    <div class="ui fluid input">
+  <input type="text" placeholder="Add article name">
+</div>
+  </div>
+  <div class="actions">
+      <div class="ui negative button">
+        Cancel
+      </div>
+      <div class="ui positive right labeled icon button addNewArticleButton">
+        Add
+        <i class="checkmark icon"></i>
+      </div>
+    </div>
+</div>
+
+<div class="ui mini modal createNewWikiCategory scrolling">
+  <i class="fa fa-close close"></i>
+  <div class="header">
+      Create new encyclopedia category
+    </div>
+  <div class="newWikiElementContent content">
+    <p>Enter a new category name. You can then add new articles to it.</p>
+    <div class="ui fluid input">
+  <input type="text" placeholder="Add category name">
+</div>
+  </div>
+  <div class="actions">
+      <div class="ui negative button">
+        Cancel
+      </div>
+      <div class="ui positive right labeled icon button addNewCategoryButton">
+        Add
+        <i class="checkmark icon"></i>
+      </div>
+    </div>
+</div>
+
+
+<div class="ui mini modal addMarkerToWiki transition">
+  <i class="fa fa-close close"></i>
+  <div class="header">Add marker to encyclopedia category</div>
+  <div class="newWikiElementContent content">
+    <p>Choose an encyclopedia category to move this marker into, removing it from the map.</p>
+    <div class="ui tiny dropdown labeled search icon button markerWikiCategoryDropdownButton" style="border-radius: 0;position: relative;top: 6px;">
+<i class="fa fa-tags" style="
+    position: absolute;
+    height: 100%;
+    line-height: 1;
+    border-radius: 0px;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    text-align: center;
+    margin: 0em;
+    width: 2.57142857em;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: '';
+    -webkit-box-shadow: -1px 0px 0px 0px transparent inset;
+    box-shadow: -1px 0px 0px 0px transparent inset;
+    top: 0em;
+    left: 0em;
+"></i>
+  <input class="search" autocomplete="off" tabindex="0"><span class="text currentWikiCategoryText currentText">Select wiki category</span>
+  <div class="menu wikiCategorySelectMenu"></div>
+</div>
+  </div>
+  <!-- <div class="actions">
+      <div class="ui negative button">
+        Cancel
+      </div>
+      <div class="ui positive right labeled icon button addNewCategoryButton">
+        Save
+        <i class="checkmark icon"></i>
+      </div>
+    </div> -->
+</div>
+
+<div class="ui modal wikiArticleModal scrolling">
+  <i class="fa fa-close close"></i>
+  <div class="header articleTitle">
+    <h2 class="articleTitleHeader"></h2>
+     <div class="ui tiny dropdown hidden labeled search icon button wikiCategoryDropdownButton" style="border-radius: 0;position: relative;top: 6px;">
+<i class="fa fa-tags" style="
+    position: absolute;
+    height: 100%;
+    line-height: 1;
+    border-radius: 0px;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    text-align: center;
+    margin: 0em;
+    width: 2.57142857em;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: '';
+    -webkit-box-shadow: -1px 0px 0px 0px transparent inset;
+    box-shadow: -1px 0px 0px 0px transparent inset;
+    top: 0em;
+    left: 0em;
+"></i>
+  <span class="text currentWikiCategoryText">Select wiki category</span>
+  <div class="menu wikiCategorySelectMenu">
+  </div>
+</div>
+
+      <div class="ui right floated main menu markerContextMenu" style="
+    float: right;
+    margin: 0;
+">
+        <a class="icon item" id="closeWikiModal" title="Close window">
+          <i class="close icon"></i>
+        </a>
+        
+        
+      </div>
+
+<div class="ui right floated main menu markerContextMenu articleEditContainer" style="
+    margin: 0;
+    margin-right: 20px;
+">
+        <a class="icon item" id="editWikiArticle" title="Edit article">
+          <i class="edit icon"></i>
+        </a>
+        <a class="icon item active green" id="saveWikiArticle" title="Edit article" style="
+    background: #12812c;
+    color: white !important;
+    font-weight: bold;
+    display: none;
+">
+          Save
+        </a>
+        <div class="ui language dropdown right floating icon item" id="deleteWikiArticle" title="Delete article" tabindex="0">
+          <i class="red trash icon"></i>
+        <div class="menu" tabindex="-1"></div></div>
+
+      </div>
+
+      <div class="ui right floated main menu markerContextMenu wikiSaveButtonContainer hidden">
+        <a class="icon item active green" id="saveArticleEdit" title="Save changes to article" style="background: rgb(18, 129, 44); font-weight: bold; color: white !important;">
+          Save
+        </a><a class="icon item active red" id="cancelArticleEdit" title="Cancel without saving" style="background: rgb(186, 71, 71); font-weight: bold; color: white !important;">Cancel</a>
+      </div>
+  </div>
+  <div contenteditable="true" id="articleContent" class="articleContent"></div>
+</div>
 
 <div class="ui modal addMarker">
   <i class="fa fa-close close"></i>
@@ -372,19 +713,36 @@ img.ui.avatar.map.image {
           <h3><i class="fa fa-plus"></i> Create new</h3>
           <p>Add a new element to your map</p>
           <div class="ui floating labeled icon dropdown button createNewElementDropdown">
-  <i class="add user icon"></i>
-  <span class="text">Add new element...</span>
+  <i class="fa fa-layer-group" style="
+    position: absolute;
+    height: 100%;
+    line-height: 1;
+    border-radius: 0px;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    text-align: center;
+    margin: 0em;
+    width: 2.57142857em;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: '';
+    -webkit-box-shadow: -1px 0px 0px 0px transparent inset;
+    box-shadow: -1px 0px 0px 0px transparent inset;
+    top: 0em;
+    left: 0em;
+    padding-left: 9px;
+"></i>
+  <span class="text">No marker layer selected</span>
   <div class="menu elementDropdownContainer">
     <div class="header">
-      Elements types on this map
+      Marker layers
     </div>
     <div class="elementTypeContainer"></div>
     <div class="header containerFooter">
-      Create new element type
+      Create new marker layer
     </div>
     <div class="item">
       <i class="fa fa-plus noIconPadding"></i>
-      New element type...
+      No marker layer selected
     </div>
   </div>
 </div>
@@ -604,11 +962,12 @@ img.ui.avatar.map.image {
                 <li class="home tab"><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
                 <li class="map tab"><a href="#map" role="tab"><i class="fa fa-map"></i></a></li>
                 <li class="place tab"><a href="#place" role="tab"><i class="fa fa-map-pin"></i></a></li>
-                <li class="storedElements tab"><a href="#storedElements" role="tab"><i class="fa fa-folder"></i></a></li>
+                <li class="markerLayers tab"><a href="#markerLayers" role="tab"><i class="fa fa-layer-group"></i></a></li>
+                <li class="storedElements tab"><a href="#storedElements" role="tab"><i class="fa fa-book"></i></a></li>
             </ul>
 
             <ul role="tablist">
-                <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+                <li><a href="#settings" role="tab"><i class="fa fa-cog"></i></a></li>
             </ul>
         </div>
 
@@ -751,18 +1110,18 @@ img.ui.avatar.map.image {
 
                 <div class="elementImage"></div>
 
-        <div class="ui right floated main menu markerContextMenu">
+        <div class="ui right floated main menu markerContextMenu editMarkerToolbar">
         <a class="icon item disabled" id="editMarker" title="Edit marker">
           <i class="edit icon"></i>
         </a>
-        <a class="icon item active green" id="saveMarkerEdit" title="Edit marker" style="
+        <a class="icon item active green" id="saveMarkerEdit" title="Save marker changes" style="
     background: #12812c;
     color: white !important;
     font-weight: bold;
     display: none;
 ">
           Save
-        </a><a class="icon item active red" id="cancelMarkerEdit" title="Edit marker" style="
+        </a><a class="icon item active red" id="cancelMarkerEdit" title="Cancel without saving" style="
     background: #ba4747;
     color: white !important;
     font-weight: bold;
@@ -773,7 +1132,7 @@ img.ui.avatar.map.image {
         </div>
       </div>
 
-      <div class="ui right floated main menu markerContextMenu">
+      <div class="ui right floated main menu markerContextMenu editMarkerToolbar">
         
         <div class="ui language dropdown right floating icon item disabled" id="addMapToMarker" title="Link a map">
           <span class="mapLinkLabel">Map</span>
@@ -787,6 +1146,29 @@ img.ui.avatar.map.image {
                 <!-- <div class="ui placeMenuDivider divider"></div> -->
                 <br><br>
                 <h2 contenteditable="false" class="markerTitle">No marker selected</h2>
+                <div class="ui fluid dropdown labeled search icon button hidden markerLayerDropdownButton" style="border-radius: 0;">
+<i class="fa fa-layer-group" style="
+    position: absolute;
+    height: 100%;
+    line-height: 1;
+    border-radius: 0px;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    text-align: center;
+    margin: 0em;
+    width: 2.57142857em;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: '';
+    -webkit-box-shadow: -1px 0px 0px 0px transparent inset;
+    box-shadow: -1px 0px 0px 0px transparent inset;
+    top: 0em;
+    left: 0em;
+"></i>
+  <span class="text currentlySelectedItemText">Select marker layer</span>
+  <div class="menu markerLayerSelectMenu">
+
+  </div>
+</div>
                 <!-- <div class="ui fluid right icon input addNewImageLink" style="display: none">
                 <input type="text" placeholder="Add an image link">
                 <i class="image icon"></i> 
@@ -799,7 +1181,7 @@ img.ui.avatar.map.image {
 
             <div class="sidebar-pane" id="settings">
                 <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                <h1 class="lorem">Shit what should go on the settings screen</h1>
+                <h1 class="lorem">Hmm what should go on the settings screen</h1>
             </div>
         
         <div class="sidebar-pane" id="storedElements">
@@ -808,14 +1190,80 @@ img.ui.avatar.map.image {
                     <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
                 </h1>
 
-                <h2 class="ui header">Stored elements</h2>
+                <h2 class="ui header">Map encyclopedia</h2>
 
-                <p>These are elements you've created that are not currently placed on a map.</p>
+                <p>Here you can organize articles and add them to the map as markers later.</p>
                 <p>Click one to delete it, or place it back on the map by clicking "New element" when adding a marker on the map.</p>
                 <div class="ui divider"></div>
-                <div class="storedElementListContainer"></div>
-                <h2 class="markerTypeFilter">
+                <div class="categoryContainer">
+                <div class="ui newCategory">
+    <p><i class="ui plus square outline icon"></i> New category</p>
+  </div>
+
+  <div class="ui category search markerSearch focus" style="
+    padding-left: 10px;
+    padding-right: 10px;
+">
+                  <div class="ui fluid icon input">
+                    <input class="prompt" type="text" placeholder="Filter people, places things..." autocomplete="off">
+                    <i class="filter icon"></i>
+                  </div>
+                  <div class="results"></div>
+  </div>
+
+<div class="wikiContainer">
+
+
+<!--   <p>Category <i class="ui icon angle down"></i></p>
+  <div class="ui tiny secondary inverted button">Edit</div> 
+
+  <div class="ui list markerListContainer">
+  <div class="item">
+    <div class="header">New York City</div>
+  </div>
+  <div class="item">
+    <div class="header">Chicago</div>
+  </div>
+  <div class="item">
+    <div class="header">Los Angeles</div>
+  </div>
+  <div class="item">
+    <div class="header">San Francisco</div>
+  </div>
+</div>
+
+<p>Category <i class="ui icon angle right"></i></p>
+<p>Category <i class="ui icon angle right"></i></p>
+<p>Category <i class="ui icon angle right"></i></p> -->
+</div>
+  
+  
+</div>
+                <!-- <div class="storedElementListContainer"></div>
+                <h2 class="markerTypeFilter"></h2> -->
                 
+
+</div>
+<div class="sidebar-pane" id="markerLayers">
+                <h1 class="sidebar-header">
+                    <span class="appTitle"></span>
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+
+                <h2 class="ui header">Marker layers</h2>
+
+                <p>This lets you organize different types of markers on the same map, and toggle one or more on or off.</p>
+                <div class="ui divider"></div>
+                <div class="item" style="
+    padding: 0px;
+">     <div class="ui fluid button openCreateNewMarkerLayerModal" tabindex="0">   <span class="text"><i class="fa fa-layer-group noIconPadding" style="
+"></i> Create new layer</span>    </div>        </div>
+                <div class="ui middle aligned divided list markerLayersList">
+
+  
+  
+</div>
+<div class="ui fluid button showAllMarkersButton" tabindex="0">   <span class="text"> Show all markers</span>    </div>
 
 </div>
             </div>
@@ -841,6 +1289,8 @@ img.ui.avatar.map.image {
     <script src="js/semantic.js"></script>
       <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=0iikpzpie668ykdytq99jv9g87bgpj1hx9jp09ihe7uwbcoy"></script>
 
+      <script src="libraries/ckeditor/ckeditor.js"></script>
+
     <script>
 
 
@@ -849,11 +1299,19 @@ img.ui.avatar.map.image {
     mapSource: "/map/api.php/records/maps",
     markerLayerSource: "/map/api.php/records/marker_layers",
     markerSource: "/map/api.php/records/markers",
+    wikiCategorySource: "/map/api.php/records/wiki_categories",
     limitString: ""
 }
 
 var selectedMapID = window.location.hash.split('/')[1] || ''; //If user is accessing a specific map
-var selectedMarkerID = window.location.hash.split('/')[3] || '';
+var selectedMarkerID = '';
+var selectedArticleID = '';
+
+if (window.location.hash.split('/')[2] == "marker") {
+selectedMarkerID = window.location.hash.split('/')[3];
+} else if (window.location.hash.split('/')[2] == "article") {
+var selectedArticleID = window.location.hash.split('/')[3];
+}
 
 
 $('#image-map').attr('data-map-id', selectedMapID);
@@ -862,8 +1320,12 @@ $('#image-map').attr('data-map-id', selectedMapID);
 var storedMaps;
 var storedMarkerLayers;
 var storedMarkers;
+var storedWikiCategories;
+
+var markerLayerMarkers = {};
 
 var storedElementsList = [];
+var activeElementsList = [];
 var linkedMapsList = [];
 
 var activeMarkers = [];
@@ -874,6 +1336,8 @@ var markersLayer;
 var list; // list to generate listmarkers
 var markerSearchIndex;
 var mapSearchIndex;
+
+var autoCompleteInitted = false;
 
 function fetchData() {
 
@@ -902,7 +1366,7 @@ function fetchData() {
 
             //Marker layers
             $.ajax({
-                url: appInit.markerLayerSource + appInit.limitString,
+                url: appInit.markerLayerSource + "?filter=mapID,eq," + selectedMapID,
                 method: "GET",
                 success: function(data) {
 
@@ -914,14 +1378,50 @@ function fetchData() {
                       window.location.href = '/map/#/' + selectedMapID
                     }
 
+                    populateMarkerLayers(storedMarkerLayers);
+
                     //Markers
                     $.ajax({
                         url: appInit.markerSource + "?filter=mapID,eq," + selectedMapID,
                         method: "GET",
                         success: function(data) {
 
+
                             storedMarkers = data.records
-                            
+
+                            for (marker in storedMarkers) {
+                              storedMarkers[marker].id = storedMarkers[marker]._id;
+                              storedMarkers[marker].name = storedMarkers[marker].title.toLowerCase();
+
+
+                          if (storedMarkers[marker].markerInStorage == 0 &&
+                            storedMarkers[marker].markerLayerID) {
+                          if (markerLayerMarkers.hasOwnProperty(storedMarkers[marker].markerLayerID) == false) {
+                          markerLayerMarkers[storedMarkers[marker].markerLayerID] = [];
+                          markerLayerMarkers[storedMarkers[marker].markerLayerID].push(storedMarkers[marker])
+                          } else if (markerLayerMarkers[storedMarkers[marker].markerLayerID]) {
+                          markerLayerMarkers[storedMarkers[marker].markerLayerID].push(storedMarkers[marker])
+                          }
+                          }
+
+                          }
+
+                              
+                            $.ajax({
+                        url: appInit.wikiCategorySource + "?order=title&filter=mapID,eq," + selectedMapID,
+                        method: "GET",
+                        success: function(data) {
+
+
+                          storedWikiCategories = data.records;
+
+                          populateWikiCategories(storedWikiCategories)
+                          populateWikiCategoriesInDropdown(storedWikiCategories);
+
+
+
+
+
 
                             //Loop through markers to get all marker types
                             var storedElementTypes = [];
@@ -946,33 +1446,12 @@ function fetchData() {
                             // storedElementTypes = res;
 
 
-
+                            var originalArticle;
                             var lastLatLng;
                             var lastSelectedMarker;
 
                             //Init the app data
                             $('.appTitle').text(appInit.appTitle);
-
-
-                            var storedElementTypes = [{
-                                    _id: "1",
-                                    title: "Places",
-                                    safeTitle: "places",
-                                    image: "img/places.png"
-                                },
-                                {
-                                    _id: "2",
-                                    title: "People",
-                                    safeTitle: "people",
-                                    image: "img/people.png"
-                                },
-                                {
-                                    _id: "3",
-                                    title: "Artifacts",
-                                    safeTitle: "artifacts",
-                                    image: "img/artifacts.png"
-                                }
-                            ]
 
 
                             var activeItem = "";
@@ -996,6 +1475,18 @@ function fetchData() {
                             main(mapObject, storedElementTypes, markerSearchIndex);
 
 
+
+                            CKEDITOR.replace( 'markerDescription',
+    {
+        plugins: 'autocomplete,textmatch,toolbar,wysiwygarea,basicstyles,link,undo,table',
+    });
+
+// CKEDITOR.inline( 'articleContent');
+
+$('#cke_articleContent').addClass('visibleModal');
+$('#articleContent').attr('contenteditable', 'false');
+
+
                         }
                     });
 
@@ -1005,8 +1496,920 @@ function fetchData() {
         }
     });
 
+  }
+});
+
 
 }
+
+
+
+    var isEditingEnabled,
+        toggle = document.getElementById( 'toggle' ),
+        reset = document.getElementById( 'reset' ),
+        articleContent = document.getElementById( 'articleContent' ),
+        articleContentHTML = articleContent.innerHTML;
+
+
+
+function disableWikiEditing() {
+      if ( CKEDITOR.instances.articleContent )
+        CKEDITOR.instances.articleContent.destroy();
+    }
+
+function updateCKEditor(instance, newHTML) {
+		if (CKEDITOR.instances[instance].document) {
+	        CKEDITOR.instances[instance].document.clearCustomData();
+			CKEDITOR.instances[instance].document.removeAllListeners();
+			CKEDITOR.instances[instance].window.getFrame().clearCustomData();
+			CKEDITOR.instances[instance].window.getFrame().removeAllListeners();
+            CKEDITOR.instances[instance].setData(newHTML);
+        }
+}
+
+    // function enableEditing() {
+    //   if ( !CKEDITOR.instances.articleContent ) {
+    //     CKEDITOR.inline( 'articleContent', {
+    //       extraAllowedContent: 'a(documentation);abbr[title];code',
+    //       removePlugins: 'stylescombo',
+    //       extraPlugins: 'sourcedialog',
+    //       startupFocus: true
+    //     } );
+    //   }
+    // }
+
+
+function findSubcategoriesByCategoryID(categoryID) {
+  var result = [];
+
+  for (category in storedWikiCategories) {
+    if (storedWikiCategories[category].parentID == categoryID) {
+      result.push(storedWikiCategories[category]);
+    }
+  }
+  return result;
+}
+
+function findMarkersByCategoryID(categoryID) {
+
+  var result = [];
+
+  for (marker in storedMarkers) {
+    if (storedMarkers[marker].wikiCategoryID == categoryID) {
+      result.push(storedMarkers[marker]);
+    }
+  }
+  return result;
+
+}
+
+function toggleViewLinkMapButton(onOff) {
+    
+
+    if (onOff == "on") {
+    
+      if ($('.mapLinkLabel').text() == "View map") {
+        $('#addMapToMarker').show();
+      }
+    
+    } else if (onOff == "off") {
+        $('#addMapToMarker').hide();
+    }
+    
+
+    }
+
+    function toggleUnlinkMapButton(onOff) {
+    
+
+    if (onOff == "on") {
+    
+      if ($('.mapLinkLabel').text() == "View map") {
+        $('#unlinkMapButton').removeClass('hidden');
+      }
+    
+    } else if (onOff == "off") {
+        $('#unlinkMapButton').addClass('hidden');
+    }
+    
+
+    }
+
+    function removeAllMarkers() {
+      for (m in activeMarkers) {
+        activeMarkers[m].options.deleteMarker()
+      }
+
+      activeMarkers = [];
+    }
+
+    function addMarkerLayerMarkers(markerLayerMarkers) {
+
+    	console.log(markerLayerMarkers);
+      $('.elementListContainer').empty();
+
+      for (m in markerLayerMarkers) {
+      
+        addMarkerData(markerLayerMarkers[m].lastLatLng, markerLayerMarkers[m].description, markerLayerMarkers[m].title, markerLayerMarkers[m].elementType, markerLayerMarkers[m].markerLayerID, markerLayerMarkers[m].id, markerLayerMarkers[m].markerBioImage, markerLayerMarkers[m].mapID, markerLayerMarkers[m].type, markerLayerMarkers[m].childMapID, markerLayerMarkers[m].customMarkerImage)
+
+        
+
+
+      }
+    }
+
+    function enableAutocomplete() {
+      if (autoCompleteInitted == false) {
+      // You will update this object in the course of this tutorial.
+var config = {};
+
+// Called when the user types in the editor or moves the caret.
+// The range represents the caret position.
+function textTestCallback( range ) {
+    // You do not want to autocomplete a non-empty selection.
+    if ( !range.collapsed ) {
+        return null;
+    }
+
+    // Use the text match plugin which does the tricky job of performing
+    // a text search in the DOM. The matchCallback function should return
+    // a matching fragment of the text.
+    return CKEDITOR.plugins.textMatch.match( range, matchCallback );
+}
+
+// Returns the position of the matching text.
+// It matches a word starting from the '#' character
+// up to the caret position.
+function matchCallback( text, offset ) {
+    // Get the text before the caret.
+    var left = text.slice( 0, offset ),
+        // Will look for a '#' character followed by a ticket number.
+        match = left.match( /@.*$/ );
+
+    if ( !match ) {
+        return null;
+    }
+    return { start: match.index, end: offset };
+}
+
+config.textTestCallback = textTestCallback;
+
+// The itemsArray variable is the example "database".
+var itemsArray = storedMarkers;
+
+// Returns (through its callback) the suggestions for the current query.
+function dataCallback( matchInfo, callback ) {
+    // Remove the '#' tag.
+    var query = matchInfo.query.substring( 1 ).toLowerCase();
+
+    // Simple search.
+    // Filter the entire items array so only the items that start
+    // with the query remain.
+    var suggestions = itemsArray.filter( function( item ) {
+        return String( item.name ).indexOf( query ) == 0;
+    } );
+
+    // Note: The callback function can also be executed asynchronously
+    // so dataCallback can do an XHR request or use any other asynchronous API.
+    callback( suggestions );
+}
+
+config.dataCallback = dataCallback;
+
+config.itemTemplate = '<li data-id="{id}">{title}</li>';
+
+config.outputTemplate = '<a href="/map/#/'+selectedMapID+'/marker/{id}">{title}</a> ';
+
+new CKEDITOR.plugins.autocomplete( CKEDITOR.instances.articleContent, config );
+new CKEDITOR.plugins.autocomplete( CKEDITOR.instances.markerDescription, config );
+
+console.log("Initted")
+autoCompleteInitted = true;
+    }
+  }
+
+
+    function toggleEditMode() {
+        if ($('.markerTitle').attr('contenteditable') == "true") {
+            //Turn off edit mode
+
+            toggleUnlinkMapButton("off")
+            toggleViewLinkMapButton('off')
+
+            $('#saveMarkerEdit, #cancelMarkerEdit').hide();
+            $('#editMarker, #deleteMarker').show();
+
+            
+            $('.markerLayerDropdownButton').addClass('hidden');
+            $('.markerDescription').removeClass('hidden');
+            $('#cke_markerDescription').hide();
+
+            $('.fileUploadForm').toggleClass('hidden');
+
+            // $('.addNewImageLink').fadeToggle(); // "Add new image link" field
+            $('.markerTitle').attr('contenteditable', 'false');
+            $('.markerDescription').attr('contenteditable', 'false');
+            $('#editMarker').removeClass('active');
+        } else {
+
+            //Turn on edit mode
+
+
+            enableAutocomplete()
+            var markerID = $('#place').attr('data-marker-id');
+            var description = selectActiveMarkerByID(markerID).options.description
+
+            updateCKEditor('markerDescription', description);
+
+            toggleUnlinkMapButton("on");
+            toggleViewLinkMapButton("on");
+
+            $('#saveMarkerEdit, #cancelMarkerEdit').fadeIn();
+            $('#editMarker, #deleteMarker').hide();
+            $('.markerLayerDropdownButton').removeClass('hidden');
+            $('.markerDescription').addClass('hidden');
+            $('#cke_markerDescription').fadeIn();
+
+            $('.fileUploadForm').toggleClass('hidden');
+            //$('.addNewImageLink').fadeToggle(); // "Add new image link" field
+            $('.markerTitle').attr('contenteditable', 'true');
+            $('.markerDescription').attr('contenteditable', 'true');
+            $('#editMarker').addClass('active');
+        }
+    }
+
+    function toggleWikiEditMode(onOff) {
+        if (onOff == "off") {
+            //Turn off edit mode
+
+            // 
+            // toggleUnlinkMapButton("off")
+            // toggleViewLinkMapButton('off')
+
+            $('#saveMarkerEdit, #cancelMarkerEdit').hide();
+            $('#editMarker, #deleteMarker').show();
+
+            $('.wikiCategoryDropdownButton').addClass('hidden');
+            $('.markerLayerDropdownButton').addClass('hidden');
+            $('.markerDescription').removeClass('hidden');
+            $('#cke_markerDescription').hide();
+
+            $('.fileUploadForm').toggleClass('hidden');
+
+            // $('.addNewImageLink').fadeToggle(); // "Add new image link" field
+            $('.markerTitle').attr('contenteditable', 'false');
+            $('.markerDescription').attr('contenteditable', 'false');
+            $('#editMarker').removeClass('active');
+        } else {
+
+            //Turn on edit mode
+
+
+            enableAutocomplete()
+            var markerID = $('#place').attr('data-marker-id');
+            var description = selectActiveMarkerByID(markerID).options.description
+
+            updateCKEditor('markerDescription', description);
+
+            toggleUnlinkMapButton("on");
+            toggleViewLinkMapButton("on");
+
+            $('#saveMarkerEdit, #cancelMarkerEdit').fadeIn();
+            $('#editMarker, #deleteMarker').hide();
+            $('.wikiCategoryDropdownButton').removeClass('hidden');
+            $('.markerLayerDropdownButton').removeClass('hidden');
+            $('.markerDescription').addClass('hidden');
+            $('#cke_markerDescription').fadeIn();
+
+            $('.fileUploadForm').toggleClass('hidden');
+            //$('.addNewImageLink').fadeToggle(); // "Add new image link" field
+            $('.markerTitle').attr('contenteditable', 'true');
+            $('.markerDescription').attr('contenteditable', 'true');
+            $('#editMarker').addClass('active');
+        }
+    }
+
+    function updateMarkerImage(imageURL) {
+
+        var markerID = $('#place').attr('data-marker-id');
+
+        if (confirm("Add new image for this marker?")) {
+            $.ajax({
+                url: appInit.markerSource + "/" + markerID,
+                method: "PUT",
+                data: {
+                    markerBioImage: imageURL
+                },
+                success: function(data) {
+                    setMarkerElementImage(imageURL);
+                    // $('.addNewImageLink > input').val('');
+                }
+
+            });
+        }
+    }
+
+    function deleteMarkerByID(id) {
+
+        $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "DELETE",
+            success: function(data) {
+                closeSidebar();
+
+                for (marker in activeMarkers) {
+                    activeMarkers[marker].options.deleteMarker();
+                }
+
+
+                //refreshMarkers();
+                //^ a function to clear the current layer and repopulate with data from the server
+            }
+
+        });
+
+
+    }
+
+
+    function changeDropdownItem(itemID, dropdownClass) {
+
+    if (itemID == -1 || itemID == 0) {
+
+      var selectedLayerItem = $('.'+dropdownClass+' > .item.noItemSelected');
+      
+      if (dropdownClass == "markerLayerSelectMenu") {
+      $('.currentlySelectedItemText').text("Select a layer for this marker");
+      } else {
+      $('.currentlySelectedItemText').text("Select an item...");
+      $('.currentText').text($('.'+dropdownClass+' > .item').text())
+      }
+
+      $('.'+dropdownClass+' > .item').removeClass('selected active');
+      $(selectedLayerItem).addClass('selected active');
+
+    } else {
+
+    if ($('.'+dropdownClass+' > .item[value="'+itemID+'"]').length) {
+      
+      var selectedLayerItem = $('.'+dropdownClass+' > .item[value="'+itemID+'"]');
+      $('.currentlySelectedItemText').text($(selectedLayerItem).text());
+      $('.'+dropdownClass+' > .item').removeClass('selected active');
+      $(selectedLayerItem).addClass('selected active');
+    
+    }
+    
+    }
+
+    }
+
+
+
+    function removeMarkerFromStorage(markerID) {
+      $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "PUT",
+            data: {
+              markerInStorage: 0
+            },
+            success: function(data) {
+                console.log(data, markerID)
+                
+                $('.storedElementListContainer > .markerType[data-marker-id="'+markerID+'"]').remove();
+
+            }
+
+        });
+    }
+
+    function moveMarkerToStorage(id) {
+
+        if (!id) {
+            var markerID = $('#place').attr('data-marker-id');
+        } else {
+            markerID = id;
+        }
+
+        $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "PUT",
+            data: {
+              markerInStorage: 1
+            },
+            success: function(data) {
+                console.log(data, markerID)
+
+                //Remove marker from list of existing elements
+                $('.elementListContainer > .markerType[data-marker-id="'+markerID+'"]').remove();
+
+                //Remove marker from search index
+
+                //Add marker to storage window
+                var elementTemplate = '<div class="markerType" data-marker-id="' + markerID + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"></i>' + selectActiveMarkerByID(markerID).options.title + '</div>'
+
+                    $('.storedElementListContainer').append(elementTemplate)
+
+                lastSelectedMarker.deleteMarker();
+
+            }
+
+        });
+
+
+    }
+
+    function deleteMarker(id) {
+
+        if (!id) {
+            var markerID = $('#place').attr('data-marker-id');
+        } else {
+            markerID = id;
+        }
+
+        $.ajax({
+            url: appInit.markerSource + '/' + markerID,
+            method: "DELETE",
+            success: function(data) {
+
+                $('.markerType[data-marker-id="'+markerID+'"]').remove();
+
+                if (selectMarkerByID(markerID).markerInStorage !== 1) {
+                lastSelectedMarker.deleteMarker();
+                }
+                resetMarkerTitleAndDescription();
+                //refreshMarkers();
+                //^ a function to clear the current layer and repopulate with data from the server
+            }
+
+        });
+
+
+    }
+
+    function resetMarkerTitleAndDescription() {
+        $('.markerTitle').text("No marker selected")
+        $('.markerDescription').text('Select a marker on the map, its information will appear in this pane.');
+    }
+
+    function hideMarkerMenu() {
+        $('.markerMenu').hide();
+        $('.markerMenu > .item').removeClass('active');
+    }
+
+
+    
+
+
+    function createMarkerFromExistingElement(markerID) {
+      var markerObj = selectMarkerByID(markerID);
+
+
+      addMarkerData(lastLatLng, markerObj.description, markerObj.title, markerObj.elementType, markerObj.markerLayerID, markerObj._id, markerObj.markerBioImage, markerObj.currentMapID, markerObj.childMapID)
+    }
+
+    function createMarkerFromLastLatLng(title, description, markerBioImage) {
+        if (title) {
+            // var mp = new L.Marker(lastLatLng, {
+            //     description: description,
+            //     title: title,
+            //     draggable: true
+            // }).bindPopup("<b>" + title + "</b>").addTo(markersLayer);
+
+            //Get attributes from the currently-selected element type dropdown.
+            var elementTypeTitle = $('.createNewElementDropdown > .text > .elementID').text();
+            var elementTypeSafeTitle = $('.createNewElementDropdown > .text > .elementID').attr('data-element-safetitle');
+            var elementTypeImage = $('.createNewElementDropdown > .text > img').attr('src');
+            var elementType = 0;
+
+            var currentMapID = $('#image-map').attr('data-map-id');
+            markerBioImage = markerBioImage ? markerBioImage : "";
+
+            var markerLayerID = 0; // Should be the ID of the current marker layer
+            var id = "";
+            var childMapID = "";
+
+            var dataObj = {
+                    "mapID": parseInt(currentMapID),
+                    "latLng": lastLatLng.join(),
+                    "title": title,
+                    "customMarkerImage": "",
+                    "markerLayerID" : 0,
+                    "description": description,
+                    "elementTypeID": elementType,
+                    "markerBioImage": markerBioImage,
+                    "markerInStorage" : 0
+                }
+
+            $.ajax({
+                url: appInit.markerSource + "/",
+                method: "POST",
+                data: dataObj,
+                success: function(data) {
+                    console.log(data);
+                    dataObj._id = data;
+                    addMarkerData(lastLatLng, description, title, elementType, markerLayerID, data, markerBioImage, currentMapID, childMapID)
+
+                    //Add a local copy of the new marker to both the primary list of markers,
+                    //and the list of currently-showing markers.
+                    storedMarkers.push(dataObj)
+                    activeElementsList.push(dataObj)
+
+                    $('.markerTitle').text(title);
+                    $('.markerDescription').html(description);
+
+                    updateCKEditor('markerDescription', description);
+                    
+                    $('#place').attr("data-marker-id", data);
+
+                    if (!markerBioImage) {
+                        hideMarkerElementImage();
+                    }
+
+                    closeSidebar();
+
+                }
+
+            });
+
+
+        }
+
+    }
+
+    function hideMarkerElementImage() {
+      $('.elementImage').hide();
+      $('.elementImage').css('background-image', 'url()');
+    }
+
+    function setMarkerElementImage(mapImageURL) {
+      $('.elementImage').show();
+
+      //Calculate padding to use for background image
+      var img = new Image();
+
+      img.onload = function(){
+        var height = img.height;
+        var width = img.width;
+      
+        var paddingPercentage = Math.floor(height / width * 100)
+        $('.elementImage').css('height', 0)
+        $('.elementImage').css('padding-top', paddingPercentage + "%");
+      }
+      
+      img.src = mapImageURL;
+
+
+
+      $('.elementImage').css('background-image', 'url(' + encodeURI(mapImageURL) + ')');
+    }
+
+    function selectMarker(marker, mapImageURL) {
+
+      console.log(marker)
+
+        $('.markerMenu').hide();
+
+        lastSelectedMarker = marker;
+
+
+        // Handle sidebar stuff
+        console.log(marker)
+
+        $.ajax({
+            url: appInit.markerSource + "/" + marker.options.id,
+            method: "GET",
+            success: function(data) {
+
+                window.location.hash = '#/' + selectedMapID + '/marker/' + marker.options.id;
+
+                markerObject = data;
+                markerObject.lastLatLng = markerObject.latLng.split(',');
+
+                var mapImageURL = markerObject.markerBioImage;
+
+
+                //Retrieve marker info
+                $('.markerTitle').text(markerObject.title);
+                $('.markerDescription').html(markerObject.description);
+                updateCKEditor('markerDescription', markerObject.description);
+                $('#place').attr('data-marker-id', markerObject._id);
+                if (mapImageURL) {
+                    $('.addNewImageLink > input').val(mapImageURL);
+                    setMarkerElementImage(mapImageURL);
+                } else {
+                    hideMarkerElementImage();
+                    $('.addNewImageLink > input').val('');
+                }
+
+
+                if ($('#editMarker').hasClass('disabled')) {
+                    $('#editMarker, #deleteMarker, #addMapToMarker').removeClass('disabled');
+                }
+                closeSidebar();
+
+            }
+        })
+
+
+
+    }
+
+    function updateDescription() {
+      var markerID = $('#place').attr('data-marker-id');
+      var description = CKEDITOR.instances.markerDescription.getData();
+      $.ajax({
+                        url: appInit.markerSource + '/' + markerID,
+                        method: "PUT",
+                        data: {
+                            description: description
+                        },
+                        success: function(data) {
+                            console.log(data);
+                        }
+
+                    });
+    }
+
+
+function populateAllMarkersMenu(markerArray) {
+
+	$('.elementListContainer').empty();
+
+	//Populate existing markers in the "All markers" menu
+            for (var i = 0; i < markerArray.length; i++) {
+                var skip = 0;
+
+                if (markerArray[i].hasOwnProperty('markerInStorage')) {
+                  if (markerArray[i].markerInStorage == 1) {
+                    storedElementsList.push(markerArray[i])
+                  skip = 1;
+                } else {
+                  activeElementsList.push(markerArray[i])
+                }
+                }
+
+                if (markerArray[i].childMapID && markerArray[i].markerInStorage !== 1) {
+                  linkedMapsList.push(markerArray[i]);
+                }
+
+                if (selectedMapID == markerArray[i].mapID && skip == false) {
+                    markerArray[i].markerRef = addMarkerData(markerArray[i].lastLatLng, markerArray[i].description, markerArray[i].title, markerArray[i].elementType, markerArray[i].markerLayerID, markerArray[i]._id, markerArray[i].markerBioImage, markerArray[i].mapID, markerArray[i].type, markerArray[i].childMapID, markerArray[i].customMarkerImage);
+                }
+            }
+
+            for (storedElement in storedElementsList) {
+      var elementTemplate = '<div class="markerType" data-marker-id="' + storedElementsList[storedElement]._id + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"></i>' + storedElementsList[storedElement].title + '</div>'
+
+    $('.storedElementListContainer').append(elementTemplate)
+    }
+
+
+    for (linkedMap in linkedMapsList) {
+      var mapTemplate = '<div class="markerType" data-marker-id="'+linkedMapsList[linkedMap]._id+'"><img class="ui avatar map image" src="http://localhost/map/img/map-pin-icon.png">'+linkedMapsList[linkedMap].title+'</div>'
+
+      $('.linkedMapsContainer').append(mapTemplate);
+    }
+}
+
+function closeSidebar() {
+
+        //Open the sidebar if it is closed
+        $('.sidebar').addClass('collapsed');
+        window.location.hash = '#/' + selectedMapID;
+        $('.sidebar-pane').addClass('active');
+        $('.sidebar-pane#place').removeClass('active');
+    }
+
+    function openSidebar() { // Opens the sidebar to the "place" tab
+        $('.sidebar-pane').removeClass('active');
+        $('.tab').removeClass('active');
+
+        $('.tab.place').addClass('active');
+        $('.sidebar-pane#place').addClass('active');
+
+        //Open the sidebar if it is closed
+        $('.sidebar').removeClass('collapsed');
+
+        if ($('#place').attr('data-marker-id')) {
+            window.location.hash = '#/' + selectedMapID + '/marker/' + $('#place').attr('data-marker-id');
+        }
+    }
+
+    function switchToSidebarTab(tabClass) {
+      $('.tab').removeClass('active');
+      $('.'+tabClass).addClass('active');
+      $('.sidebar-pane').removeClass('active');
+      $('.sidebar-pane#'+tabClass).addClass('active');
+    }
+
+
+function addMarkerData(lastLatLng, description, title, elementType, markerLayerID, id, markerBioImage, mapID, type, childMapID, customMarkerImage) {
+
+
+      var customIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png', //'/map/img/brent-l.jpg',
+iconAnchor: [13, 40], 
+popupAnchor: [0, -25] 
+});
+
+
+      // var customIcon = L.icon({
+      //       iconUrl: "https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png",
+      //       iconSize: [60, 60], // size of the icon
+      //       iconAnchor: [5, 50], // point of the icon which will correspond to marker's location
+      //       popupAnchor: [20, -40] // point from which the popup should open relative to the iconAnchor
+      //   });
+
+      // if (customMarkerImage) {
+      //   customIcon = L.icon({
+      //       iconUrl: customMarkerImage,
+      //       iconSize: [60, 60], // size of the icon
+      //       iconAnchor: [5, 50], // point of the icon which will correspond to marker's location
+      //       popupAnchor: [20, -40] // point from which the popup should open relative to the iconAnchor
+      //   });
+      // }
+
+      console.log(customIcon)
+
+        var mp = new L.Marker(lastLatLng, {
+            description: description,
+            title: title,
+            id: id,
+            icon: customIcon,
+            elementType: elementType,
+            draggable: true,
+            lastLatLng: lastLatLng,
+            childMapID: childMapID,
+            markerBioImage: markerBioImage,
+            markerLayerID: markerLayerID,
+            flyTo: function() {
+                map.flyTo(this.lastLatLng, 9);
+                console.log(this.lastLatLng)
+            },
+            deleteMarker: function() {
+                mp.remove();
+            },
+            rateLimit() {
+
+            },
+            selectThisMarker: function() {
+
+                $('.markerMenu').hide();
+
+                $('.currentMarker').removeClass('hidden');
+                $('.allMarkers').addClass('hidden');
+                $('.showThisMarker').addClass('active');
+                $('.showAllMarkers').removeClass('active');
+                
+
+                lastSelectedMarker = this;
+                var marker = this;
+                console.log(marker)
+
+                // Handle sidebar stuff
+                console.log(marker)
+
+                $.ajax({
+                    url: appInit.markerSource + '/' + marker.id,
+                    method: "GET",
+                    success: function(data) {
+
+
+                        
+
+                        window.location.hash = '#/' + selectedMapID + '/marker/' + marker.id;
+
+                        markerObject = data;
+
+                        
+                        changeDropdownItem(markerObject.markerLayerID, 'markerLayerSelectMenu');
+                      
+
+
+                        var mapImageURL = markerObject.markerBioImage;
+
+                        //Retrieve marker info
+                        $('.markerTitle').text(markerObject.title);
+                        $('.markerDescription').html(markerObject.description);
+                        if (CKEDITOR.instances.markerDescription.getData() !== markerObject.description) {
+                        updateCKEditor('markerDescription', markerObject.description);
+                        }
+                        $('#place').attr('data-marker-id', markerObject._id);
+                        if (mapImageURL) {
+                            $('.addNewImageLink > input').val(mapImageURL);
+                            console.log(mapImageURL)
+                            setMarkerElementImage(mapImageURL);
+                        } else {
+                            hideMarkerElementImage();
+                            $('.addNewImageLink > input').val('');
+                        }
+
+
+                        if ($('#editMarker').hasClass('disabled')) {
+                            $('#editMarker, #deleteMarker, #addMapToMarker').removeClass('disabled');
+                        }
+
+                        if (type !== "quickMarker") {
+                            openSidebar();
+                        }
+
+                    }
+                })
+
+
+                if (childMapID && childMapID !== -1) {
+                $('.mapLinkLabel').text("View map");
+                $('#addMapToMarker').show();
+            } else {
+                $('#addMapToMarker').hide();
+                $('.mapLinkLabel').text("Link a map");
+                
+            }
+
+
+            
+
+            }
+
+        }).bindPopup("<div data-attr-id='" + id + "'>" + title + "</div>").addTo(markersLayer);
+
+        activeMarkers.push(mp);
+
+
+        if ($('.elementListContainer > .markerType').length <= 50) {
+            var elementTemplate = '<div class="markerType" data-marker-id="' + mp.options.id + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"><span>' + mp.options.title + '</span></div>'
+
+            $('.elementListContainer').append(elementTemplate)
+        }
+
+
+        mp.on('click', function(e) {
+          console.log(e)
+            // selectMarker(e.target, markerBioImage);
+            this.options.selectThisMarker();
+            this.options.flyTo();
+
+            this.options.rateLimit()
+            
+        });
+
+        mp.on('mouseover', function(e) {
+            this.openPopup();
+        });
+
+        mp.on('mouseout', function(e) {
+            this.closePopup();
+        });
+
+        mp.on('dragend', function() {
+
+            //TODO: Update marker latlng after drag end
+
+            if (id) {
+
+                var coord = String(mp.getLatLng());
+                latLngArray = coord.split('(')[1].split(')')[0].split(', ');
+
+                var markerID = id;
+
+                $.ajax({
+                    url: appInit.markerSource + "/" + markerID,
+                    method: "PUT",
+                    data: {
+                        latLng: latLngArray.join()
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        mp.options.lastLatLng = latLngArray;
+                    }
+                });
+
+
+
+
+                mp.options.selectThisMarker();
+            } else {
+                "No ID found for this marker."
+            }
+
+        });
+
+        $('.markerForm').hide();
+        $('.createNewElementDropdown > .text').html("No marker layer selected")
+        $('.markerTitleInput, .markerDescriptionInput').val('');
+
+        if (selectedMarkerID == id) {
+            mp.options.selectThisMarker();
+            lastSelectedMarker = mp;
+
+            openSidebar();
+        }
+
+        $('.leaflet-marker-icon').removeAttr('title');
+
+        return mp;
+
+    }
 
 
 
@@ -1025,6 +2428,260 @@ function selectMarkerByID(markerID) {
         }
     }
 }
+
+function selectMarkerLayerByID(layerID) {
+  for (marker in storedMarkerLayers) {
+        if (storedMarkerLayers[marker]._id == layerID) {
+            return storedMarkerLayers[marker];
+        }
+    }
+}
+
+function selectWikiCategoryByID(articleID) {
+
+  for (category in storedWikiCategories) {
+    if (storedWikiCategories[category]._id == articleID) {
+      return storedWikiCategories[category];
+    }
+  }
+
+}
+
+function enableWikiWYSIWYG() {
+
+		var markerID = $('.wikiArticleModal').attr('data-marker-id');
+
+			var markerObject = selectMarkerByID(markerID)
+
+            var categoryTitle = selectWikiCategoryByID(markerObject.wikiCategoryID).title
+
+            $('.currentWikiCategoryText').text(categoryTitle);
+
+            $('.wikiCategorySelectMenu > .item').removeClass('active selected');
+            $('.wikiCategorySelectMenu > .item[value="'+markerObject.wikiCategoryID+'"]').addClass('active selected') 
+
+		originalArticle = $('#articleContent').html();
+
+        $('.markerContextMenu.wikiSaveButtonContainer, .wikiCategoryDropdownButton').removeClass('hidden');
+        $('.articleEditContainer').addClass('hidden');
+        $('#cke_articleContent').addClass('visibleModal');
+        $('#articleContent').attr('contenteditable', true);
+        CKEDITOR.instances.articleContent.focus()
+}
+
+function disableWikiWYSIWYG() {
+		originalArticle = $('#articleContent').html();
+        $('#articleContent').html(originalArticle);
+        $('.markerContextMenu.wikiSaveButtonContainer, .wikiCategoryDropdownButton').addClass('hidden');
+        $('.articleEditContainer').removeClass('hidden');
+        $('#cke_articleContent').removeClass('visibleModal');
+        $('#articleContent').attr('contenteditable', false);
+}
+
+function openWikiModal(markerID) {
+  var markerObj = selectMarkerByID(markerID);
+
+
+  $('.articleTitleHeader').text(markerObj.title);
+  $('.articleContent').html(markerObj.description);
+  $('.wikiArticleModal').modal("show");
+  $('.wikiArticleModal').attr('data-marker-id', markerID);
+}
+
+function populateWikiCategories(storedWikiCategoryList, elementToNavigateBackTo) {
+
+	$('.wikiContainer').empty();
+
+  for (category in storedWikiCategoryList) {
+  if (!storedWikiCategoryList[category].parentID ||
+  storedWikiCategoryList[category].parentID == -1) {
+  var categoryTemplate = '<p class="categoryContainer"><span class="categoryDropdown" data-category-id="'+storedWikiCategoryList[category]._id+'"><i class="ui icon angle right"></i> <span class="categoryTitle">'+storedWikiCategoryList[category].title+'</span></span></p>'
+  $('.wikiContainer').append(categoryTemplate);
+  }
+  }
+
+
+//Navigate back to the selected category
+  if (elementToNavigateBackTo) {
+        var sectionArray = [];
+
+function getSectionsToExpand(id) {
+
+var thisArticle;
+
+for (category in storedWikiCategories) {
+        if (storedWikiCategories[category]._id == id) {
+            thisArticle = storedWikiCategories[category];
+        }
+}
+
+sectionArray.push(thisArticle._id);
+
+if (thisArticle.parentID !== null &&
+  thisArticle.parentID !== -1) {
+  getSectionsToExpand(thisArticle.parentID);
+}
+
+}
+
+getSectionsToExpand(elementToNavigateBackTo)
+var sectionsToExpand = sectionArray;
+console.log(sectionArray.reverse())
+
+for (section in sectionsToExpand) {
+$('[data-category-id="'+sectionsToExpand[section]+'"]').click();
+}
+    
+    
+      }
+
+
+}
+
+function createNewWikiCategory(title, parentID) {
+
+var wikiCategoryID = $('.createNewWikiArticle').attr('data-category-id');
+
+  $.ajax({
+                url: appInit.wikiCategorySource + "/",
+                method: "POST",
+                data: {
+                    "parentID": "",
+                    "title": title,
+                    "mapID": parseInt(currentMapID)
+                },
+                success: function(data) {
+                    
+                    resetWikiCategories(wikiCategoryID);
+
+                }
+
+            });
+
+}
+
+function resetWikiCategories(elementToNavigateBackTo) {
+
+
+
+      $.ajax({
+                        url: appInit.wikiCategorySource + "?order=title&filter=mapID,eq," + selectedMapID,
+                        method: "GET",
+                        success: function(data) {
+                          console.log(data);
+
+                          storedWikiCategories = data.records;
+
+                          $('.wikiContainer').empty();
+
+                          populateWikiCategories(data.records, elementToNavigateBackTo)
+
+
+    }
+  })
+  }
+
+function populateMarkerLayers(storedMarkerLayers) {
+  $('.markerLayersList, .markerLayerSelectMenu').empty();
+
+  //Specific to the pin menu marker layer dropdown
+  $('.markerLayerSelectMenu').append('<div class="item noItemSelected">No layer</div>')
+
+
+for (markerLayer in storedMarkerLayers) {
+
+  var editModeDropdownItem = '<div value="'+storedMarkerLayers[markerLayer]._id+'" class="item">'+storedMarkerLayers[markerLayer].title+'</div>'
+
+  var template = '<div class="item markerLayerContainer" data-layer-id="'+storedMarkerLayers[markerLayer]._id+'"> \
+    <div class="right floated content"> \
+      <div class="ui floating dropdown button toggleLayer"> \
+  <span class="text">Toggle</span> \
+  \
+</div> \
+      <div class="ui button editMarkerLayer">Edit</div> \
+    </div> \
+    <div class="content markerLayerLabel">'+storedMarkerLayers[markerLayer].title+'</div> \
+  </div>'
+
+//<div class="menu"> \
+//    <div class="item hideLayerItem"> \
+//      Show only this layer \
+//    </div> \
+//  </div> \
+
+  $('.markerLayersList').append(template);
+  $('.markerLayerSelectMenu').append(editModeDropdownItem);
+                    }
+}
+
+function populateWikiCategoriesInDropdown(storedMarkerLayers) {
+  $('.wikiCategorySelectMenu').empty();
+
+  //Specific to the pin menu marker layer dropdown
+  // $('.wikiCategorySelectMenu').append('<div class="item noCategorySelected">No category</div>')
+
+
+for (category in storedWikiCategories) {
+  var editModeDropdownItem = '<div value="'+storedWikiCategories[category]._id+'" class="item">'+storedWikiCategories[category].title+'</div>'
+  $('.wikiCategorySelectMenu').append(editModeDropdownItem);
+                    }
+}
+
+function populateMarkerLayers(storedMarkerLayers) {
+  $('.markerLayersList, .markerLayerSelectMenu').empty();
+
+  //Specific to the pin menu marker layer dropdown
+  $('.markerLayerSelectMenu').append('<div class="item noItemSelected">No layer</div>')
+
+
+for (markerLayer in storedMarkerLayers) {
+
+  var editModeDropdownItem = '<div value="'+storedMarkerLayers[markerLayer]._id+'" class="item">'+storedMarkerLayers[markerLayer].title+'</div>'
+
+  var template = '<div class="item markerLayerContainer" data-layer-id="'+storedMarkerLayers[markerLayer]._id+'"> \
+    <div class="right floated content"> \
+      <div class="ui floating dropdown button toggleLayer"> \
+  <span class="text">Toggle</span> \
+  \
+</div> \
+      <div class="ui button editMarkerLayer">Edit</div> \
+    </div> \
+    <div class="content markerLayerLabel">'+storedMarkerLayers[markerLayer].title+'</div> \
+  </div>'
+
+//<div class="menu"> \
+//    <div class="item hideLayerItem"> \
+//      Show only this layer \
+//    </div> \
+//  </div> \
+
+  $('.markerLayersList').append(template);
+  $('.markerLayerSelectMenu').append(editModeDropdownItem);
+                    }
+}
+
+function resetAddNewDropdowns() {
+  $('.addNew .text').each(function() {
+  	$(this).text('Edit "' + $(this).attr('data-text') + '"...');
+  })
+  $('.addNew .menu > .item').removeClass('active selected')
+}
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+
+
+
+
+
 
 function main(mapObject, storedElementTypes, markerSearchIndex) {
 
@@ -1146,14 +2803,32 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
 
             });
 
+                                        var storedElementTypes = [{
+                                    _id: "1",
+                                    title: "Places",
+                                    safeTitle: "places",
+                                    image: "img/places.png"
+                                },
+                                {
+                                    _id: "2",
+                                    title: "People",
+                                    safeTitle: "people",
+                                    image: "img/people.png"
+                                },
+                                {
+                                    _id: "3",
+                                    title: "Artifacts",
+                                    safeTitle: "artifacts",
+                                    image: "img/artifacts.png"
+                                }
+                            ]
+
 
             //Populate element type selection dropdown
-            for (var i = 0; i < storedElementTypes.length; i++) {
-
+            for (var i = 0; i < storedMarkerLayers.length; i++) {
 
                 var elementTypeTemplate = '<div class="item markerType"> \
-      <img class="ui avatar image" src="' + storedElementTypes[i].image + '"> \
-      <span class="elementID" data-element-safetitle="' + storedElementTypes[i].safeTitle + '" data-element-id="' + storedElementTypes[i]._id + '">' + storedElementTypes[i].title + '</span> \
+      <span class="elementID" data-element-id="' + storedMarkerLayers[i]._id + '">' + storedMarkerLayers[i].title + '</span> \
     </div>';
 
                 $('.containerFooter').before(elementTypeTemplate);
@@ -1162,43 +2837,12 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
             }
 
 
-            //Populate existing markers
-            for (var i = 0; i < storedMarkers.length; i++) {
-                var skip = 0;
-
-                if (storedMarkers[i].hasOwnProperty('markerInStorage')) {
-                  if (storedMarkers[i].markerInStorage == 1) {
-                    storedElementsList.push(storedMarkers[i])
-                  skip = 1;
-                }
-                }
-
-                if (storedMarkers[i].childMapID) {
-                  linkedMapsList.push(storedMarkers[i]);
-                }
-
-                if (selectedMapID == storedMarkers[i].mapID && skip == false) {
-                    storedMarkers[i].markerRef = addMarkerData(storedMarkers[i].lastLatLng, storedMarkers[i].description, storedMarkers[i].title, storedMarkers[i].elementType, storedMarkers[i].markerLayer, storedMarkers[i]._id, storedMarkers[i].markerBioImage, storedMarkers[i].mapID, storedMarkers[i].type, storedMarkers[i].childMapID, storedMarkers[i].customMarkerImage);
-                }
-            }
-
-            for (storedElement in storedElementsList) {
-      var elementTemplate = '<div class="markerType" data-marker-id="' + storedElementsList[storedElement]._id + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"></i>' + storedElementsList[storedElement].title + '</div>'
-
-    $('.storedElementListContainer').append(elementTemplate)
-    }
-
-
-    for (linkedMap in linkedMapsList) {
-      var mapTemplate = '<div class="markerType" data-marker-id="'+linkedMapsList[linkedMap]._id+'"><img class="ui avatar map image" src="http://localhost/map/img/map-pin-icon.png">'+linkedMapsList[linkedMap].title+'</div>'
-
-      $('.linkedMapsContainer').append(mapTemplate);
-    }
+            populateAllMarkersMenu(storedMarkers);
 
 
             //Script to control updating the contenteditable fields
             var title = $('.markerTitle').text();
-            var description = tinymce.activeEditor.getContent();
+            var description = CKEDITOR.instances.markerDescription.getData()
             $('.markerTitle, .markerDescription').blur(function() {
                 if ($(this).hasClass('markerTitle') && title != $(this).text()) {
                     title = $(this).text();
@@ -1214,7 +2858,9 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
                         success: function(data) {
                             console.log(data);
                             selectActiveMarkerByID(markerID).options.title = title;
+                            selectMarkerByID(markerID).title = title;
                             selectActiveMarkerByID(markerID)._popup._content = "<div data-attr-id='" + markerID + "'>" + title + "</div>"
+                            populateAllMarkersMenu(storedMarkers)
                         }
 
                     });
@@ -1265,18 +2911,197 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
         hideMarkerMenu();
     })
 
-    $('body').on('click', '.storedElementListContainer > .markerType', function() {
-      var markerID = $(this).attr('data-marker-id');
-        if (confirm("Delete this stored marker forever?")) {
-            deleteMarker(markerID);
-        }
+
+    // Probably want to delete this, "stored markers" is no longer a screen.
+    // $('body').on('click', '.storedElementListContainer > .markerType', function() {
+    //   var markerID = $(this).attr('data-marker-id');
+    //     if (confirm("Delete this stored marker forever?")) {
+    //         deleteMarker(markerID);
+    //     }
+    // })
+
+    
+
+    $('body').on('click', '.editMarkerLayer', function() {
+
+    var layerID = $(this).closest('[data-layer-id]').attr('data-layer-id')
+    var originalText = $('[data-layer-id="'+layerID+'"]').find('.markerLayerLabel').text()
+
+    var userRenamesMarkerLayer = prompt("Edit this layer name", originalText);
+
+    if (userRenamesMarkerLayer && userRenamesMarkerLayer !== originalText) {
+      $.ajax({
+                        url: appInit.markerLayerSource + '/' + layerID,
+                        method: "PUT",
+                        data: {
+                            title: userRenamesMarkerLayer
+                        },
+                        success: function(data) {
+                            $('[data-layer-id="'+layerID+'"]').find('.markerLayerLabel').text(userRenamesMarkerLayer);
+                            selectMarkerLayerByID(layerID).title = userRenamesMarkerLayer;
+                        }
+
+                    });
+    }
+        
+
     })
 
+    //User toggles a specific marker layer
+    $('body').on('click', '.toggleLayer', function(e) {
+
+      lastSelectedMarker = "";
+
+      if ($(this).closest('.markerLayerContainer').hasClass('active')) {
+
+        $('.markerLayerContainer').removeClass('active');
+      removeAllMarkers();
+      addMarkerLayerMarkers(activeElementsList)
+      window.location.hash = '#/' + selectedMapID
+      } else {
+
+      
+
+      e.preventDefault()
+      
+      var layerID = $(this).closest('[data-layer-id]').attr('data-layer-id')
+      window.location.hash = '#/' + selectedMapID + "/?markerLayer=" + layerID
+      
+      $(this).closest('.dropdown').find('.text').text('Toggle');
+      $('.markerLayerContainer').removeClass('active');
+      $(this).closest('.markerLayerContainer').addClass('active');
+
+      removeAllMarkers();
+
+    markerLayerMarkers = {};
+    
+    for (marker in storedMarkers) {
+
+        storedMarkers[marker].id = storedMarkers[marker]._id;
+        storedMarkers[marker].name = storedMarkers[marker].title.toLowerCase();
+     	
+     	if (storedMarkers[marker].markerInStorage == 0 &&
+     	    	storedMarkers[marker].markerLayerID) {
+     			if (markerLayerMarkers.hasOwnProperty(storedMarkers[marker].markerLayerID) == false) {
+     				markerLayerMarkers[storedMarkers[marker].markerLayerID] = [];
+     				markerLayerMarkers[storedMarkers[marker].markerLayerID].push(storedMarkers[marker])
+     			} else if (markerLayerMarkers[storedMarkers[marker].markerLayerID]) {
+     				markerLayerMarkers[storedMarkers[marker].markerLayerID].push(storedMarkers[marker])
+     			}
+     		}	
+    }
+
+
+
+      addMarkerLayerMarkers(markerLayerMarkers[layerID])
+      }
+    })
+
+
+
+
+
+    $('body').on('click', '.showAllMarkersButton', function() {
+
+      $('.markerLayerContainer').removeClass('active');
+      removeAllMarkers();
+      addMarkerLayerMarkers(activeElementsList)
+      window.location.hash = '#/' + selectedMapID;
+
+
+    })
+
+
+
+    $('body').on('click', '#editWikiArticle', function() {
+    	enableWikiWYSIWYG();
+    })
+
+    $('body').on('click', '#cancelArticleEdit', function() {
+    	disableWikiWYSIWYG()
+    })
+
+    $('body').on('click', '#saveArticleEdit', function() {
+        
+        var markerID = $('.wikiArticleModal').attr('data-marker-id');
+        var description = CKEDITOR.instances.articleContent.getData();
+
+                    $.ajax({
+                        url: appInit.markerSource + '/' + markerID,
+                        method: "PUT",
+                        data: {
+                            description: description
+                        },
+                        success: function(data) {
+
+                            console.log(data);
+                            $('#articleContent').html()
+                            $('.markerContextMenu.wikiSaveButtonContainer').addClass('hidden');
+                            $('.articleEditContainer').removeClass('hidden');
+                            $('#cke_articleContent').removeClass('visibleModal');
+                            $('#articleContent').attr('contenteditable', 'false');
+
+                            selectMarkerByID(markerID).description = description;
+
+                        }
+
+                    });
+
+
+        
+        //Disable wiki WYSIWYG
+    })
+
+    $('body').on('click', '#deleteWikiArticle', function() {
+        
+        if (confirm("Really delete this wiki article?")) {
+        
+        var wikiCategoryID = $('.createNewWikiCategory').attr('data-category-id');
+        var markerID = $('.wikiArticleModal').attr('data-marker-id');
+        var description = CKEDITOR.instances.articleContent.getData();
+
+                    $.ajax({
+                        url: appInit.markerSource + '/' + markerID,
+                        method: "DELETE",
+                        success: function(data) {
+
+                            console.log(data);
+                            $('#articleContent').html()
+                            $('.markerContextMenu.wikiSaveButtonContainer').addClass('hidden');
+                            $('.articleEditContainer').removeClass('hidden');
+                            $('#cke_articleContent').removeClass('visibleModal');
+                            $('#articleContent').attr('contenteditable', 'false');
+
+                            for (marker in storedMarkers) {
+                              if (storedMarkers[marker]._id == markerID) {
+                                  storedMarkers.splice(marker, 1);
+                              }
+                            } 
+    
+
+                            resetWikiCategories(wikiCategoryID);
+
+
+                        }
+
+                    });
+
+
+        
+        //Disable wiki WYSIWYG
+      }
+    })
+    
+
     $('body').on('click', '#deleteMarker', function() {
-        var markerID = $('#place').attr('data-attr-id');
-        if (confirm("Put this marker back in storage?")) {
-            moveMarkerToStorage(markerID);
-        }
+        var markerID = $('#place').attr('data-marker-id');
+
+        $('.addMarkerToWiki').attr('data-marker-id', markerID);
+        $('.addMarkerToWiki').modal('show');
+
+        // if (confirm("Put this marker back in storage?")) {
+        //     moveMarkerToStorage(markerID);
+        // }
     })
 
     $('body').on('mouseover', '.elementListContainer > .markerType', function() {
@@ -1290,10 +3115,215 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
     })
 
     $('body').on('click', '.markerType', function() {
+    	$('.modal').modal('hide');
         var markerID = $(this).attr('data-marker-id');
         var markerToSelect = selectActiveMarkerByID(markerID);
         markerToSelect.options.selectThisMarker();
         markerToSelect.options.flyTo();
+    })
+
+
+    $('body').on('click', '.addNewMarkerLayerButton', function() {
+      var title = $('.createNewMarkerLayerModal input').val();
+
+      if (title !== "") {
+
+      var dataObj = {
+                    title: title,
+                    mapID: selectedMapID,
+                    description: ""
+                }
+
+      $.ajax({
+                url: appInit.markerLayerSource + "?filter=mapID,eq," + selectedMapID,
+                method: "POST",
+                data: dataObj,
+                success: function(data) {
+                    dataObj._id = data;
+                    //Add the new marker layer to storedMarkerLayers and repopulate marker layers with the new object added
+
+                    storedMarkerLayers.push(dataObj);
+
+                    populateMarkerLayers(storedMarkerLayers);
+
+                    $('.createNewMarkerLayerModal input').val('');
+
+                }
+
+            });
+    } else {
+      alert("Please enter a title.")
+    }
+    })
+
+    $('body').on('click', '.addNewWikiElement .menu', function() {
+      resetAddNewDropdowns()
+    })
+
+    $('body').on('click', '.newArticle', function() {
+
+      if ($(this)[0].hasAttribute('data-category-id')) {
+        $('.createNewWikiArticle').attr('data-category-id', $(this).attr('data-category-id'))
+      } else {
+        $('.createNewWikiArticle').removeAttr('data-category-id');
+      }
+
+      $('.createNewWikiArticle input').val('');
+      $('.createNewWikiArticle').modal('show')
+    })
+
+
+    $('body').on('click', '.newCategory', function() {
+
+      if ($(this)[0].hasAttribute('data-category-id')) {
+        $('.createNewWikiCategory').attr('data-category-id', $(this).attr('data-category-id'))
+      } else {
+        $('.createNewWikiCategory').removeAttr('data-category-id');
+      }
+
+      $('.createNewWikiCategory input').val('');
+      $('.createNewWikiCategory').modal('show')
+    })
+
+
+
+    $('body').on('click', '.renameCategory', function() {
+
+    var categoryID = $(this).attr('data-category-id')
+    var originalText = $('[data-category-id="'+categoryID+'"]').find('.categoryTitle').text();
+
+    var userRenamesWikiCategory = prompt("Edit this category name", originalText);
+
+    if (userRenamesWikiCategory && userRenamesWikiCategory !== originalText) {
+      $.ajax({
+            url: appInit.wikiCategorySource + '/' + categoryID,
+            method: "PUT",
+            data: {
+                title: userRenamesWikiCategory
+            },
+            success: function(data) {
+                $('.open[data-category-id="'+categoryID+'"]').find('.categoryTitle').text(userRenamesWikiCategory);
+
+                selectWikiCategoryByID(categoryID).title = userRenamesWikiCategory;
+                resetWikiCategories(categoryID);
+            }
+
+        });
+    }
+
+    })
+
+    $('body').on('click', '.deleteCategory', function() {
+
+    var categoryID = $(this).attr('data-category-id')
+
+    if (confirm("Really delete this category? Any elements underneath it will be orphaned and inaccessible.")) {
+      $.ajax({
+            url: appInit.wikiCategorySource + '/' + categoryID,
+            method: "DELETE",
+            success: function(data) {
+                $('.open[data-category-id="'+categoryID+'"]').remove();
+                $('[data-parent-category-id="'+categoryID+'"]').remove();
+
+                for (category in storedWikiCategories) {
+                              if (storedWikiCategories[category]._id == categoryID) {
+                                  storedWikiCategories.splice(category, 1);
+                              }
+                } 
+
+            }
+
+        });
+    }
+
+    })
+
+
+
+
+    $('body').on('click', '.addNewCategoryButton', function() {
+      var title = $('.createNewWikiCategory input').val();
+      var parentID = $('.createNewWikiCategory').attr('data-category-id');
+
+
+      if (!parentID) {
+        parentID = -1;
+      }
+
+      if (title !== "") {
+
+      $.ajax({
+                url: appInit.wikiCategorySource + "/",
+                method: "POST",
+                data: {
+                    parentID: parentID,
+                    title: title,
+                    mapID: selectedMapID
+                },
+                success: function(data) {
+                    
+                    resetWikiCategories(parentID);
+
+                }
+
+            });
+    } else {
+      alert("Please enter a title.")
+    }
+    })
+
+    $('body').on('click', '.addNewArticleButton', function() {
+      var title = $('.createNewWikiArticle input').val();
+      var wikiCategoryID = $('.createNewWikiArticle').attr('data-category-id');
+
+      if (title !== "") {
+
+        var dataObj = {
+                    "mapID": selectedMapID,
+                    "latLng": "0,0",
+                    "title": title,
+                    "customMarkerImage": "",
+                    "markerLayerID" : 0,
+                    "description": "",
+                    "elementTypeID": 0,
+                    "markerBioImage": "",
+                    "markerInStorage" : 1,
+                    "wikiCategoryID" : wikiCategoryID
+                }
+
+        $.ajax({
+                url: appInit.markerSource + "/",
+                method: "POST",
+                data: dataObj,
+                success: function(data) {
+
+                    console.log(data);
+                    dataObj._id = data;
+                    storedMarkers.push(dataObj)
+                    resetWikiCategories(wikiCategoryID);
+
+                }
+
+            });
+
+      
+      } else {
+        alert("Please enter a title.")
+      }
+    })
+
+
+
+
+
+
+
+    $('body').on('click', '.openCreateNewMarkerLayerModal', function() {
+      $('.createNewMarkerLayerModal').modal('show');
+    })
+
+    $('body').on('click', '#closeWikiModal', function() {
+      $('.wikiArticleModal').modal('hide');
     })
 
     $('body').on('click', '#editMarker', function() {
@@ -1307,8 +3337,128 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
     })
 
 
+$('body').on('click', '.subcategoryItem', function(event) {
+  var markerID = $(this).attr('data-marker-id');
+  selectedArticleID = markerID;
+  event.stopPropagation();
+  $('.subcategoryItem').removeClass('active');
+  $(this).addClass('active');
+
+  disableWikiWYSIWYG()
+
+  window.location.hash = '#/' + selectedMapID + '/article/' + selectedArticleID;
+
+  openWikiModal(markerID)
+
+})
+
+
+
+
+$('body').on('click', '.addNewWikiElement', function(event) {
+  event.stopPropagation();
+
+  var categoryID = $(this).attr('data-category-id');
+
+  var wikiCategory = selectWikiCategoryByID(categoryID);
+
+  if ($(event.target).hasClass('newArticle')) {
+
+    //Create a new marker in storage
+
+  } else if ($(event.target).hasClass('newCategory')) {
+
+    //Create a new wiki category with wikiCategory set as the parentID
+
+  }
+  
+
+})
+
+
+$('body').on('click', '.categoryDropdown, .subcategoryDropdown', function(event) {
+
+
+  var thisCategoryID = $(this).attr('data-category-id');
+
+
+  event.stopPropagation();
+
+
+
+if ($(this).hasClass('open') == false) {
+
+	var categoryID = $(this).attr('data-category-id');
+	var categoryText = $(this).text();
+	
+	var sectionCategories = findSubcategoriesByCategoryID(categoryID);
+	var sectionMarkers = findMarkersByCategoryID(categoryID);
+	
+	var categoryTemplate = "";
+	var markerListTemplate = "";
+
+
+	for (category in sectionCategories) {
+	categoryTemplate += '<p class="subcategoryDropdown" data-parent-category-id="'+categoryID+'" data-category-id="'+	sectionCategories[category]._id+'"><i class="ui icon angle right"></i> <span class="categoryTitle">'+sectionCategories	[category].title+'</span></p>';
+	}
+	
+	for (marker in sectionMarkers) {
+    if (sectionMarkers[marker].markerInStorage == 1) {
+	markerListTemplate += '<div data-marker-id="'+sectionMarkers[marker]._id+'" data-parent-category-id="'+categoryID+'" 	class="item subcategoryItem"><div class="header">'+sectionMarkers[marker].title+'</div></div>'
+	}
+  }
+	
+	markerListTemplate += '<div class="addNew item"><div data-category-id="'+categoryID+'" class="header 	addNewWikiElement"><div class="ui inline dropdown"><i class="fa fa-edit noIconPadding"></i> \
+	  <div class="text" data-text="'+categoryText+'"><span class="categoryTitle">Edit "'+categoryText+'"...</span></div> \
+	  <i class="dropdown icon"></i> \
+	  <div class="menu"> \
+	    <div data-category-id="'+categoryID+'" class="item newArticle">Add new article here</div> \
+	    <div data-category-id="'+categoryID+'" class="item newCategory">Add new category here</div> \
+	    <div class="divider"></div> \
+	    <div data-category-id="'+categoryID+'" class="item renameCategory">Rename</div> \
+	    <div data-category-id="'+categoryID+'" class="item deleteCategory"><i class="fa fa-trash"></i> Delete</div> \
+	  </div> \
+	</div></div></div>';
+
+	if ($(this).hasClass('subcategoryDropdown')) {
+	$(this).append(categoryTemplate)
+	$(this).append(markerListTemplate)
+	$(this).find('.ui.segments, .markerListContainer').slideToggle();
+	} else {
+	$(this).parent().append(categoryTemplate)
+	$(this).parent().append(markerListTemplate)
+	$(this).parent().find('.ui.segments, .markerListContainer').slideToggle();
+	}
+	
+	$('.ui.inline.dropdown').dropdown();
+
+	$(this).addClass('open');
+	$(this).find('i').first().removeClass('right').addClass('down');
+	
+} else {
+	  if ($(this).hasClass('subcategoryDropdown')) {
+	    $(this).find('p, div').remove();
+	    $(this).find('.ui.segments, .markerListContainer').slideToggle();
+	  } else {
+	    $(this).parent().find('p, div').remove();
+	    $(this).parent().find('.ui.segments, .markerListContainer').slideToggle();
+	  }
+	  $(this).removeClass('open');
+	  $(this).find('i').first().removeClass('down').addClass('right');
+}
+
+
+resetAddNewDropdowns();
+$('#articleContent').attr('contenteditable', 'false');
+
+
+});
+
+
+
+
     $('body').on('click', '#saveMarkerEdit', function() {
-        var description = tinymce.activeEditor.getContent();
+        var description = CKEDITOR.instances.markerDescription.getData()
 
                     var markerID = $('#place').attr('data-marker-id');
 
@@ -1654,579 +3804,9 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
     });
 
 
-    function toggleViewLinkMapButton(onOff) {
     
 
-    if (onOff == "on") {
     
-      if ($('.mapLinkLabel').text() == "View map") {
-        $('#addMapToMarker').show();
-      }
-    
-    } else if (onOff == "off") {
-        $('#addMapToMarker').hide();
-    }
-    
-
-    }
-
-    function toggleUnlinkMapButton(onOff) {
-    
-
-    if (onOff == "on") {
-    
-      if ($('.mapLinkLabel').text() == "View map") {
-        $('#unlinkMapButton').removeClass('hidden');
-      }
-    
-    } else if (onOff == "off") {
-        $('#unlinkMapButton').addClass('hidden');
-    }
-    
-
-    }
-
-
-    function toggleEditMode() {
-        if ($('.markerTitle').attr('contenteditable') == "true") {
-            //Turn off edit mode
-
-            toggleUnlinkMapButton("off")
-            toggleViewLinkMapButton('off')
-
-            $('#saveMarkerEdit, #cancelMarkerEdit').hide();
-            $('#editMarker, #deleteMarker').show();
-
-            
-
-            $('.markerDescription').removeClass('hidden');
-            $('.mce-tinymce').hide();
-
-            $('.fileUploadForm').toggleClass('hidden');
-
-            // $('.addNewImageLink').fadeToggle(); // "Add new image link" field
-            $('.markerTitle').attr('contenteditable', 'false');
-            $('.markerDescription').attr('contenteditable', 'false');
-            $('#editMarker').removeClass('active');
-        } else {
-
-            //Turn on edit mode
-
-
-            
-            var markerID = $('#place').attr('data-marker-id');
-            var description = selectActiveMarkerByID(markerID).options.description
-
-            tinymce.activeEditor.setContent(description);
-
-            toggleUnlinkMapButton("on");
-            toggleViewLinkMapButton("on");
-
-            $('#saveMarkerEdit, #cancelMarkerEdit').fadeIn();
-            $('#editMarker, #deleteMarker').hide();
-            $('.markerDescription').addClass('hidden');
-            $('.mce-tinymce').fadeIn();
-
-            $('.fileUploadForm').toggleClass('hidden');
-            //$('.addNewImageLink').fadeToggle(); // "Add new image link" field
-            $('.markerTitle').attr('contenteditable', 'true');
-            $('.markerDescription').attr('contenteditable', 'true');
-            $('#editMarker').addClass('active');
-        }
-    }
-
-    function updateMarkerImage(imageURL) {
-
-        var markerID = $('#place').attr('data-marker-id');
-
-        if (confirm("Add new image for this marker?")) {
-            $.ajax({
-                url: appInit.markerSource + "/" + markerID,
-                method: "PUT",
-                data: {
-                    markerBioImage: imageURL
-                },
-                success: function(data) {
-                    setMarkerElementImage(imageURL);
-                    // $('.addNewImageLink > input').val('');
-                }
-
-            });
-        }
-    }
-
-    function deleteMarkerByID(id) {
-
-        $.ajax({
-            url: appInit.markerSource + '/' + markerID,
-            method: "DELETE",
-            success: function(data) {
-                closeSidebar();
-
-                for (marker in activeMarkers) {
-                    activeMarkers[marker].options.deleteMarker();
-                }
-
-
-                //refreshMarkers();
-                //^ a function to clear the current layer and repopulate with data from the server
-            }
-
-        });
-
-
-    }
-
-    function removeMarkerFromStorage(markerID) {
-      $.ajax({
-            url: appInit.markerSource + '/' + markerID,
-            method: "PUT",
-            data: {
-              markerInStorage: 0
-            },
-            success: function(data) {
-                console.log(data, markerID)
-                
-                $('.storedElementListContainer > .markerType[data-marker-id="'+markerID+'"]').remove();
-
-            }
-
-        });
-    }
-
-    function moveMarkerToStorage(id) {
-
-        if (!id) {
-            var markerID = $('#place').attr('data-marker-id');
-        } else {
-            markerID = id;
-        }
-
-        $.ajax({
-            url: appInit.markerSource + '/' + markerID,
-            method: "PUT",
-            data: {
-              markerInStorage: 1
-            },
-            success: function(data) {
-                console.log(data, markerID)
-
-                //Remove marker from list of existing elements
-                $('.elementListContainer > .markerType[data-marker-id="'+markerID+'"]').remove();
-
-                //Remove marker from search index
-
-                //Add marker to storage window
-                var elementTemplate = '<div class="markerType" data-marker-id="' + markerID + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"></i>' + selectActiveMarkerByID(markerID).options.title + '</div>'
-
-                    $('.storedElementListContainer').append(elementTemplate)
-
-                lastSelectedMarker.deleteMarker();
-
-            }
-
-        });
-
-
-    }
-
-    function deleteMarker(id) {
-
-        if (!id) {
-            var markerID = $('#place').attr('data-marker-id');
-        } else {
-            markerID = id;
-        }
-
-        $.ajax({
-            url: appInit.markerSource + '/' + markerID,
-            method: "DELETE",
-            success: function(data) {
-
-                $('.markerType[data-marker-id="'+markerID+'"]').remove();
-
-                if (selectMarkerByID(markerID).markerInStorage !== 1) {
-                lastSelectedMarker.deleteMarker();
-                }
-                resetMarkerTitleAndDescription();
-                //refreshMarkers();
-                //^ a function to clear the current layer and repopulate with data from the server
-            }
-
-        });
-
-
-    }
-
-    function resetMarkerTitleAndDescription() {
-        $('.markerTitle').text("No marker selected")
-        $('.markerDescription').text('Select a marker on the map, its information will appear in this pane.');
-    }
-
-    function hideMarkerMenu() {
-        $('.markerMenu').hide();
-        $('.markerMenu > .item').removeClass('active');
-    }
-
-
-    function addMarkerData(lastLatLng, description, title, elementType, markerLayer, id, markerBioImage, mapID, type, childMapID, customMarkerImage) {
-
-
-      var customIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png', //'/map/img/brent-l.jpg',
-iconAnchor: [13, 40], 
-popupAnchor: [0, -25] 
-});
-
-
-      // var customIcon = L.icon({
-      //       iconUrl: "https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png",
-      //       iconSize: [60, 60], // size of the icon
-      //       iconAnchor: [5, 50], // point of the icon which will correspond to marker's location
-      //       popupAnchor: [20, -40] // point from which the popup should open relative to the iconAnchor
-      //   });
-
-      // if (customMarkerImage) {
-      //   customIcon = L.icon({
-      //       iconUrl: customMarkerImage,
-      //       iconSize: [60, 60], // size of the icon
-      //       iconAnchor: [5, 50], // point of the icon which will correspond to marker's location
-      //       popupAnchor: [20, -40] // point from which the popup should open relative to the iconAnchor
-      //   });
-      // }
-
-      console.log(customIcon)
-
-        var mp = new L.Marker(lastLatLng, {
-            description: description,
-            title: title,
-            id: id,
-            icon: customIcon,
-            elementType: elementType,
-            draggable: true,
-            lastLatLng: lastLatLng,
-            childMapID: childMapID,
-            markerBioImage: markerBioImage,
-            flyTo: function() {
-                map.flyTo(this.lastLatLng, 9);
-                console.log(this.lastLatLng)
-            },
-            deleteMarker: function() {
-                mp.remove();
-            },
-            selectThisMarker: function() {
-
-                $('.markerMenu').hide();
-
-                $('.currentMarker').removeClass('hidden');
-                $('.allMarkers').addClass('hidden');
-                $('.showThisMarker').addClass('active');
-                $('.showAllMarkers').removeClass('active');
-                
-
-                lastSelectedMarker = this;
-                var marker = this;
-                console.log(marker)
-
-                // Handle sidebar stuff
-                console.log(marker)
-
-                $.ajax({
-                    url: appInit.markerSource + '/' + marker.id,
-                    method: "GET",
-                    success: function(data) {
-
-                        window.location.hash = '#/' + selectedMapID + '/marker/' + marker.id;
-
-                        markerObject = data;
-
-                        var mapImageURL = markerObject.markerBioImage;
-
-
-                        //Retrieve marker info
-                        $('.markerTitle').text(markerObject.title);
-                        $('.markerDescription').html(markerObject.description);
-                        tinymce.activeEditor.setContent(markerObject.description);
-                        $('#place').attr('data-marker-id', markerObject._id);
-                        if (mapImageURL) {
-                            $('.addNewImageLink > input').val(mapImageURL);
-                            console.log(mapImageURL)
-                            setMarkerElementImage(mapImageURL);
-                        } else {
-                            hideMarkerElementImage();
-                            $('.addNewImageLink > input').val('');
-                        }
-
-
-                        if ($('#editMarker').hasClass('disabled')) {
-                            $('#editMarker, #deleteMarker, #addMapToMarker').removeClass('disabled');
-                        }
-
-                        if (type !== "quickMarker") {
-                            openSidebar();
-                        }
-
-
-                    }
-                })
-
-
-                if (childMapID && childMapID !== -1) {
-                $('.mapLinkLabel').text("View map");
-                $('#addMapToMarker').show();
-            } else {
-                $('.mapLinkLabel').text("Link a map");
-                
-            }
-            }
-
-        }).bindPopup("<div data-attr-id='" + id + "'>" + title + "</div>").addTo(markersLayer);
-
-        activeMarkers.push(mp);
-
-
-        if ($('.elementListContainer > .markerType').length <= 50) {
-            var elementTemplate = '<div class="markerType" data-marker-id="' + mp.options.id + '"><img class="ui avatar image" src="https://unpkg.com/leaflet@1.3.4/dist/images/marker-icon.png"><span>' + mp.options.title + '</span></div>'
-
-            $('.elementListContainer').append(elementTemplate)
-        }
-
-
-        mp.on('click', function(e) {
-          console.log(e)
-            // selectMarker(e.target, markerBioImage);
-            this.options.selectThisMarker();
-            this.options.flyTo();
-            
-        });
-
-        mp.on('mouseover', function(e) {
-            this.openPopup();
-        });
-
-        mp.on('mouseout', function(e) {
-            this.closePopup();
-        });
-
-        mp.on('dragend', function() {
-
-            //TODO: Update marker latlng after drag end
-
-            if (id) {
-
-                var coord = String(mp.getLatLng());
-                latLngArray = coord.split('(')[1].split(')')[0].split(', ');
-
-                var markerID = id;
-
-                $.ajax({
-                    url: appInit.markerSource + "/" + markerID,
-                    method: "PUT",
-                    data: {
-                        latLng: latLngArray.join()
-                    },
-                    success: function(data) {
-                        console.log(data);
-                        mp.options.lastLatLng = latLngArray;
-                    }
-                });
-
-
-
-
-                mp.options.selectThisMarker();
-            } else {
-                "No ID found for this marker."
-            }
-
-        });
-
-        $('.markerForm').hide();
-        $('.createNewElementDropdown > .text').html("Add new element...")
-        $('.markerTitleInput, .markerDescriptionInput').val('');
-
-        if (selectedMarkerID == id) {
-            mp.options.selectThisMarker();
-            lastSelectedMarker = mp;
-
-            openSidebar();
-        }
-
-        return mp;
-
-    }
-
-
-    function createMarkerFromExistingElement(markerID) {
-      var markerObj = selectMarkerByID(markerID);
-
-
-      addMarkerData(lastLatLng, markerObj.description, markerObj.title, markerObj.elementType, markerObj.markerLayer, markerObj._id, markerObj.markerBioImage, markerObj.currentMapID, markerObj.childMapID)
-    }
-
-    function createMarkerFromLastLatLng(title, description, markerBioImage) {
-        if (title) {
-            // var mp = new L.Marker(lastLatLng, {
-            //     description: description,
-            //     title: title,
-            //     draggable: true
-            // }).bindPopup("<b>" + title + "</b>").addTo(markersLayer);
-
-            //Get attributes from the currently-selected element type dropdown.
-            var elementTypeTitle = $('.createNewElementDropdown > .text > .elementID').text();
-            var elementTypeSafeTitle = $('.createNewElementDropdown > .text > .elementID').attr('data-element-safetitle');
-            var elementTypeImage = $('.createNewElementDropdown > .text > img').attr('src');
-            var elementType = 0;
-
-            var currentMapID = $('#image-map').attr('data-map-id');
-            markerBioImage = markerBioImage ? markerBioImage : "";
-
-            var markerLayer = ""; // Should be the ID of the current marker layer
-            var id = "";
-            var childMapID = "";
-
-            $.ajax({
-                url: appInit.markerSource + "/",
-                method: "POST",
-                data: {
-                    "mapID": parseInt(currentMapID),
-                    "latLng": lastLatLng.join(),
-                    "title": title,
-                    "customMarkerImage": "",
-                    "markerLayerID" : 0,
-                    "description": description,
-                    "elementTypeID": elementType,
-                    "markerBioImage": markerBioImage,
-                    "markerInStorage" : 0
-                },
-                success: function(data) {
-                    console.log(data);
-                    addMarkerData(lastLatLng, description, title, elementType, markerLayer, data, markerBioImage, currentMapID, childMapID)
-
-                    $('.markerTitle').text(title);
-                    $('.markerDescription').html(description);
-                    tinymce.activeEditor.setContent(description);
-                    $('#place').attr("data-marker-id", data);
-
-                    if (!markerBioImage) {
-                        hideMarkerElementImage();
-                    }
-
-                    closeSidebar();
-
-                }
-
-            });
-
-
-        }
-
-    }
-
-    function hideMarkerElementImage() {
-      $('.elementImage').hide();
-      $('.elementImage').css('background-image', 'url()');
-    }
-
-    function setMarkerElementImage(mapImageURL) {
-      $('.elementImage').show();
-      $('.elementImage').css('background-image', 'url(' + encodeURI(mapImageURL) + ')');
-    }
-
-    function selectMarker(marker, mapImageURL) {
-
-      console.log(marker)
-
-        $('.markerMenu').hide();
-
-        lastSelectedMarker = marker;
-
-
-        // Handle sidebar stuff
-        console.log(marker)
-
-        $.ajax({
-            url: appInit.markerSource + "/" + marker.options.id,
-            method: "GET",
-            success: function(data) {
-
-                window.location.hash = '#/' + selectedMapID + '/marker/' + marker.options.id;
-
-                markerObject = data;
-                markerObject.lastLatLng = markerObject.latLng.split(',');
-
-                var mapImageURL = markerObject.markerBioImage;
-
-
-                //Retrieve marker info
-                $('.markerTitle').text(markerObject.title);
-                $('.markerDescription').html(markerObject.description);
-                tinymce.activeEditor.setContent(markerObject.description);
-                $('#place').attr('data-marker-id', markerObject._id);
-                if (mapImageURL) {
-                    $('.addNewImageLink > input').val(mapImageURL);
-                    setMarkerElementImage(mapImageURL);
-                } else {
-                    hideMarkerElementImage();
-                    $('.addNewImageLink > input').val('');
-                }
-
-
-                if ($('#editMarker').hasClass('disabled')) {
-                    $('#editMarker, #deleteMarker, #addMapToMarker').removeClass('disabled');
-                }
-                closeSidebar();
-
-            }
-        })
-
-
-
-    }
-
-    function updateDescription() {
-      var markerID = $('#place').attr('data-marker-id');
-      var description = tinymce.activeEditor.getContent();
-      $.ajax({
-                        url: appInit.markerSource + '/' + markerID,
-                        method: "PUT",
-                        data: {
-                            description: description
-                        },
-                        success: function(data) {
-                            console.log(data);
-                        }
-
-                    });
-    }
-
-    function closeSidebar() {
-
-        //Open the sidebar if it is closed
-        $('.sidebar').addClass('collapsed');
-        window.location.hash = '#/' + selectedMapID;
-        $('.sidebar-pane').addClass('active');
-        $('.sidebar-pane#place').removeClass('active');
-    }
-
-    function openSidebar() { // Opens the sidebar to the "place" tab
-        $('.sidebar-pane').removeClass('active');
-        $('.tab').removeClass('active');
-
-        $('.tab.place').addClass('active');
-        $('.sidebar-pane#place').addClass('active');
-        //Open the sidebar if it is closed
-        $('.sidebar').removeClass('collapsed');
-
-        if ($('#place').attr('data-marker-id')) {
-            window.location.hash = '#/' + selectedMapID + '/marker/' + $('#place').attr('data-marker-id');
-        }
-    }
-
-    function switchToSidebarTab(tabClass) {
-      $('.tab').removeClass('active');
-      $('.'+tabClass).addClass('active');
-    }
 
     // map.on('click', function(e){
     //   var coord = e.latlng;
@@ -2276,8 +3856,14 @@ popupAnchor: [0, -25]
     }
 
 
+
+
     //UI Initialization
-    $('.dropdown').dropdown();
+    $('.markerLayerSelect').dropdown({clearable: true});
+
+
+    // $('.dropdown').dropdown();
+    $('.ui.inline.dropdown, .createNewElementDropdown').dropdown();
     $('.ui.radio.checkbox').checkbox();  
 
 
@@ -2434,11 +4020,17 @@ popupAnchor: [0, -25]
               console.log(result);
               if ($(this).hasClass('linkElementSearch') == false) {
                 console.log("No link elment search")
-                selectActiveMarkerByID(result._id).options.selectThisMarker()
-                selectActiveMarkerByID(result._id).options.flyTo()
+                var thisMarkerElement = selectActiveMarkerByID(result._id);
+                if (thisMarkerElement) {
+                thisMarkerElement.options.selectThisMarker()
+                thisMarkerElement.options.flyTo()
+              	} else {
+              		openWikiModal(result._id);
+              	}
               } else { // We're selecting the element in the search box, close it
                 $('.addMarker').modal('hide');
                 $('.addMarker .prompt').val('');
+                selectMarkerByID(result._id).markerInStorage = 0;
                 var markerObj = selectMarkerByID(result._id);
                 console.log(markerObj)
 
@@ -2447,6 +4039,7 @@ popupAnchor: [0, -25]
                 createMarkerFromExistingElement(result._id);
                 resetMarkerTitleAndDescription();
                 switchToSidebarTab('storedElements')
+                resetWikiCategories(markerObj.wikiCategoryID);
                
               }
             }
@@ -2467,9 +4060,86 @@ popupAnchor: [0, -25]
 
 
 
+        //User changes a marker's layer via the edit menu dropdown
+    $('.markerLayerDropdownButton').dropdown({
+      onChange: function(value, text, element) {
+        console.log(value, text, $(element).attr('value'));
+
+        var newLayerID;
+        var markerID = $('#place').attr('data-marker-id');
+
+        if (value == "no layer") {
+          var newLayerID = 0;
+        } else {
+          var newLayerID = $(element).attr('value');
+        }
+
+        console.log(newLayerID)
+
+        $.ajax({ 
+                url: appInit.markerSource + "/" + markerID,
+                method: "PUT",
+                data: {
+                    markerLayerID: newLayerID
+                },
+                success: function(data) {
+                    console.log(data);
+                    //Update the local data.
+                    selectMarkerByID(markerID).markerLayerID = newLayerID;
+                    console.log(selectMarkerByID(markerID))
+
+                }
+
+        });
 
 
+      }
+    });
 
+    $('.wikiCategoryDropdownButton, .markerWikiCategoryDropdownButton').dropdown({
+      onChange: function(value, text, element) {
+
+      	var markerID = "";
+      	var modalDropdown = $(this).hasClass('markerWikiCategoryDropdownButton');
+
+      	var newWikiCategory = $(element).attr('value');
+      	console.log($(this))
+      	if (modalDropdown) {
+		markerID = $('.addMarkerToWiki').attr('data-marker-id');
+      	} else {
+      	markerID = $('.wikiArticleModal').attr('data-marker-id');
+    	}
+
+    	if (selectMarkerByID(markerID)) {
+        $.ajax({ 
+                url: appInit.markerSource + "/" + markerID,
+                method: "PUT",
+                data: {
+                    wikiCategoryID: newWikiCategory
+                },
+                success: function(data) {
+                    console.log(data);
+                    //Update the local data.
+                    selectMarkerByID(markerID).markerInStorage = 1;
+                    var markerObj = selectMarkerByID(markerID);
+                    markerObj.wikiCategoryID = newWikiCategory;
+                    if (modalDropdown) {
+                    	moveMarkerToStorage(markerID);
+                    	$('.addMarkerToWiki').modal('hide');
+
+                      //Update local stored wiki category
+              resetWikiCategories(newWikiCategory)
+                    }
+                    
+        			
+
+                }
+        });
+
+    	}
+        
+      }
+    });
 
 
 
@@ -2487,33 +4157,143 @@ popupAnchor: [0, -25]
 
 
 
-tinymce.init({
-  selector: '#markerDescription',
-  content_style: "body#tinymce > p {margin-bottom: 16px !important;}",
-  init_instance_callback: function (editor) {
-    editor.on('blur', function (e) {
-      console.log('Editor was blurred!');
-    });
-  }
-});
 
+function toggleMarkerLayer(markerLayerID) {
+
+ //Implementing a query param for deep linking into marker layers
+
+ if (markerLayerID) {
+
+ 	$('.markerLayerContainer').removeClass('active');
+ 	$('.markerLayerContainer[data-layer-id="'+markerLayerID+'"]').addClass('active');
+ 	
+ 	removeAllMarkers();
+	markerLayerMarkers = {};
+    
+    for (marker in storedMarkers) {
+
+        storedMarkers[marker].id = storedMarkers[marker]._id;
+        storedMarkers[marker].name = storedMarkers[marker].title.toLowerCase();
+     	
+     	if (storedMarkers[marker].markerInStorage == 0 &&
+     	    	storedMarkers[marker].markerLayerID) {
+     			if (markerLayerMarkers.hasOwnProperty(storedMarkers[marker].markerLayerID) == false) {
+     				markerLayerMarkers[storedMarkers[marker].markerLayerID] = [];
+     				markerLayerMarkers[storedMarkers[marker].markerLayerID].push(storedMarkers[marker])
+     			} else if (markerLayerMarkers[storedMarkers[marker].markerLayerID]) {
+     				markerLayerMarkers[storedMarkers[marker].markerLayerID].push(storedMarkers[marker])
+     			}
+     		}	
+    }
+
+
+
+      addMarkerLayerMarkers(markerLayerMarkers[markerLayerID])
+    }
+  
+}
+
+/**
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+setTimeout(function() {
+ //Implementing a query param for deep linking into marker layers
+ var layerID = getParameterByName('markerLayer');
+ toggleMarkerLayer(layerID);
+  }, 300);
+
+ //Implementing 'article' URL hashes to auto-open articles
+ //and the sidebar if an article ID is provided
+ if (selectedArticleID) {
+ 	setTimeout(function() {
+  disableWikiWYSIWYG();
+  openSidebar();
+  openWikiModal(selectedArticleID)
+  switchToSidebarTab('storedElements');
+
+var sectionArray = [];
+
+getSectionsToExpand(selectMarkerByID(selectedArticleID).wikiCategoryID)
+var sectionsToExpand = sectionArray;
+
+var sectionsToExpand = sectionArray;
+for (section in sectionsToExpand) {
+$('[data-category-id="'+sectionsToExpand[section]+'"]').click();
+}
+
+
+ $('.subcategoryItem').removeClass('active');
+  $('.subcategoryItem[data-marker-id="'+selectedArticleID+'"]').addClass('active');
+
+
+  
+
+
+}, 300);
+
+}
 
 
 }
 
+
+var sectionArray = []
+
+function getSectionsToExpand(id) {
+
+console.log(id);
+
+var thisArticle;
+
+for (category in storedWikiCategories) {
+        if (storedWikiCategories[category]._id == id) {
+            thisArticle = storedWikiCategories[category];
+        }
+}
+
+console.log(thisArticle)
+
+sectionArray.push(thisArticle._id);
+
+if (thisArticle.parentID !== null &&
+  thisArticle.parentID !== -1) {
+  getSectionsToExpand(thisArticle.parentID);
+}
+
+}
+
+
+
+
+
+
+
+
     
 fetchData();
 
-window.onhashchange = function() {
-    if (window.location.hash.split('/')[1] !== selectedMapID) {
-        window.location.reload();
-    } else {
-      if (window.location.hash.split('/')[3]) {
-        selectActiveMarkerByID(window.location.hash.split('/')[3]).options.selectThisMarker();
-        selectActiveMarkerByID(window.location.hash.split('/')[3]).options.flyTo()
-      }
-    }
-}</script>
+
+
+ window.onpopstate = function() {
+     if (window.location.hash.split('/')[1] !== selectedMapID) {
+         window.location.reload();
+     } else {
+       if (window.location.hash.split('/')[3] && window.location.hash.split('/')[2] == "marker") {
+       	 $('.modal').modal('hide');
+         selectActiveMarkerByID(window.location.hash.split('/')[3]).options.selectThisMarker();
+         selectActiveMarkerByID(window.location.hash.split('/')[3]).options.flyTo()
+       } else if (window.location.hash.split('/')[2] == "article") {
+       openWikiModal(window.location.hash.split('/')[3]);	
+       } else {
+       	// window.location.reload();
+       }
+     }
+}
+
+
+</script>
 
     <script src="js/leaflet-list-markers.js"></script>
 
