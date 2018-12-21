@@ -742,12 +742,9 @@ ul.cke_autocomplete_panel {
     </div>
     <div class="elementTypeContainer"></div>
     <div class="header containerFooter">
-      Create new marker layer
+      <!-- Create new marker layer -->
     </div>
-    <div class="item">
-      <i class="fa fa-plus noIconPadding"></i>
-      No marker layer selected
-    </div>
+    
   </div>
 </div>
 <div class="padded markerForm">
@@ -755,11 +752,11 @@ ul.cke_autocomplete_panel {
 <div class="ui form">
   <div class="field">
     <label>Marker title</label>
-    <input class="ui input markerTitleInput">
+    <input class="ui input newElementMarkerTitleInput">
   </div>
 <div class="field">
     <label>Marker description</label>
-    <textarea class="markerDescriptionInput" rows="2"></textarea>
+    <textarea class="newElementMarkerDescriptionInput" rows="2"></textarea>
   </div>
 </div>
 </div>
@@ -1185,7 +1182,11 @@ ul.cke_autocomplete_panel {
 
             <div class="sidebar-pane" id="settings">
                 <h1 class="sidebar-header">Settings<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
-                <h1 class="lorem">Hmm what should go on the settings screen</h1>
+                <h1 class="lorem">Hmm what else should go on the settings screen</h1>
+
+                <h3>Change map background color</h3>
+                <input id="jscolor-bg" class="jscolor {onFineChange:'updateBackground(this)'}" value="ddd">
+                <button class="setAsDefaultBackgroundColor">Set as default</button>
             </div>
         
         <div class="sidebar-pane" id="storedElements">
@@ -1294,6 +1295,8 @@ ul.cke_autocomplete_panel {
       <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=0iikpzpie668ykdytq99jv9g87bgpj1hx9jp09ihe7uwbcoy"></script>
 
       <script src="libraries/ckeditor/ckeditor.js"></script>
+      <script src="libraries/jscolor.js"></script>
+
 
     <script>
 
@@ -1344,6 +1347,8 @@ var markersLayer;
 var list; // list to generate listmarkers
 var markerSearchIndex;
 var mapSearchIndex;
+
+var initialMarkerFocus = 0;
 
 var autoCompleteInitted = false;
 
@@ -1975,7 +1980,8 @@ autoCompleteInitted = true;
       addMarkerData(lastLatLng, markerObj.description, markerObj.title, markerObj.elementType, markerObj.markerLayerID, markerObj._id, markerObj.markerBioImage, markerObj.currentMapID, markerObj.childMapID)
     }
 
-    function createMarkerFromLastLatLng(title, description, markerBioImage) {
+    function createMarkerFromLastLatLng(title, description, markerBioImage, markerLayerID) {
+        console.log(title, description, markerBioImage, markerLayerID)
         if (title) {
             // var mp = new L.Marker(lastLatLng, {
             //     description: description,
@@ -1989,10 +1995,13 @@ autoCompleteInitted = true;
             var elementTypeImage = $('.createNewElementDropdown > .text > img').attr('src');
             var elementType = 0;
 
+            if (!markerLayerID) {
+              markerLayerID = 0;
+            }
+
             var currentMapID = $('#image-map').attr('data-map-id');
             markerBioImage = markerBioImage ? markerBioImage : "";
 
-            var markerLayerID = 0; // Should be the ID of the current marker layer
             var id = "";
             var childMapID = "";
 
@@ -2001,7 +2010,7 @@ autoCompleteInitted = true;
                     "latLng": lastLatLng.join(),
                     "title": title,
                     "customMarkerImage": "",
-                    "markerLayerID" : 0,
+                    "markerLayerID" : markerLayerID,
                     "description": description,
                     "elementTypeID": elementType,
                     "markerBioImage": markerBioImage,
@@ -2276,6 +2285,11 @@ popupAnchor: [0, -25]
                 lastSelectedMarker = this;
                 var marker = this;
                 console.log(marker)
+                
+                if (initialMarkerFocus == 0) {
+                  marker.flyTo();
+                  initialMarkerFocus = 1;
+                }
 
                 // Handle sidebar stuff
                 console.log(marker)
@@ -2407,7 +2421,7 @@ popupAnchor: [0, -25]
 
         $('.markerForm').hide();
         $('.createNewElementDropdown > .text').html("No marker layer selected")
-        $('.markerTitleInput, .markerDescriptionInput').val('');
+        $('.newElementMarkerTitleInput, .markerDescriptionInput').val('');
 
         if (selectedMarkerID == id) {
             mp.options.selectThisMarker();
@@ -2498,6 +2512,7 @@ function openWikiModal(markerID) {
   $('.articleContent').html(markerObj.description);
   $('.wikiArticleModal').modal("show");
   $('.wikiArticleModal').attr('data-marker-id', markerID);
+  $('.addMarkerToWiki').attr('data-marker-id', markerID);
 }
 
 function populateWikiCategories(storedWikiCategoryList, elementToNavigateBackTo) {
@@ -2689,6 +2704,9 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+function updateBackground(newColor) {
+  $('#image-map').css('background-color', newColor);
+}
 
 
 
@@ -2732,6 +2750,11 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
 
     var imageWidth;
     var imageHeight;
+
+    if (mapObject.defaultBackgroundColor) {
+      document.getElementById('jscolor-bg').jscolor.fromString(mapObject.defaultBackgroundColor)
+      $('#image-map').css('background-color', mapObject.defaultBackgroundColor);
+    }
 
     var img = $("<img />").attr('src', mapObject.mapImageURL)
         .on('load', function() {
@@ -2906,7 +2929,16 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
 
     $('body').on('click', '.addNewElementButton', function() {
         $('.sidebar').addClass('collapsed');
-        $('.ui.modal.addMarker').modal('show');
+        $('.ui.modal.addMarker').modal({
+    closable  : false,
+    onDeny    : function(){
+      return false;
+    },
+    onApprove : function() {
+      return false;
+    }
+  }).modal('show');
+
         $('.markerMenu').hide();
     })
 
@@ -2932,6 +2964,20 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
     //     }
     // })
 
+
+    $('.setAsDefaultBackgroundColor').click(function() {
+      $.ajax({
+                        url: appInit.mapSource + "/" + mapObject._id,
+                        method: "PUT",
+                        data: {
+                            defaultBackgroundColor: $('.jscolor').val()
+                        },
+                        success: function(data) {
+                        alert("Default background color updated for '" +mapObject.title+ "'")
+                          }
+
+      });
+    })
     
 
     $('body').on('click', '.editMarkerLayer', function() {
@@ -3108,7 +3154,8 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
     $('body').on('click', '#deleteMarker', function() {
         var markerID = $('#place').attr('data-marker-id');
 
-        $('.addMarkerToWiki').attr('data-marker-id', markerID);
+        $('.wikiArticleModal').attr('data-marker-id', markerID);
+  $('.addMarkerToWiki').attr('data-marker-id', markerID);
         $('.addMarkerToWiki').modal('show');
 
         // if (confirm("Put this marker back in storage?")) {
@@ -3116,17 +3163,17 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
         // }
     })
 
-    $('body').on('mouseover', '.elementListContainer > .markerType', function() {
+    $('body').on('mouseover', '#place .elementListContainer > .markerType', function() {
         var markerID = $(this).attr('data-marker-id');
         selectActiveMarkerByID(markerID).openPopup()
     })
 
-    $('body').on('mouseout', '.markerType', function() {
+    $('body').on('mouseout', '#place .markerType', function() {
         var markerID = $(this).attr('data-marker-id');
         selectActiveMarkerByID(markerID).closePopup()
     })
 
-    $('body').on('click', '.markerType', function() {
+    $('body').on('click', '#place .markerType', function() {
     	$('.modal').modal('hide');
         var markerID = $(this).attr('data-marker-id');
         var markerToSelect = selectActiveMarkerByID(markerID);
@@ -3901,11 +3948,16 @@ $('#articleContent').attr('contenteditable', 'false');
     });
 
     //When clicking to add a new marker
-    $('.addMarkerButton').click(function() {
+    $('body').on('click', '.addMarkerButton', function() {
+        var title = $('.newElementMarkerTitleInput').val();
+        var description = $('.newElementMarkerDescriptionInput').val();
+        var markerLayerID = $('.addMarker .elementID').attr('data-element-id')
+        createMarkerFromLastLatLng(title, description, "", markerLayerID)
+        $('.addMarker').modal('hide');
+    })
 
-        var title = $('.markerTitleInput').val();
-        var description = $('.markerDescriptionInput').val();
-        createMarkerFromLastLatLng(title, description)
+    $('body').on('click', '.addMarker .deny.button', function() {
+      $('.addMarker').modal('hide');
     })
 
 
@@ -4109,7 +4161,42 @@ $('#articleContent').attr('contenteditable', 'false');
       }
     });
 
-    $('.wikiCategoryDropdownButton, .markerWikiCategoryDropdownButton').dropdown({
+    $('body').on('click', '.wikiCategorySelectMenu > .item', function() {
+      markerID = $('.addMarkerToWiki').attr('data-marker-id');
+      var newWikiCategory = $(this).attr('value');
+      if (selectMarkerByID(markerID)) {
+        $.ajax({ 
+                url: appInit.markerSource + "/" + markerID,
+                method: "PUT",
+                data: {
+                    wikiCategoryID: newWikiCategory
+                },
+                success: function(data) {
+                    console.log(data);
+                    //Update the local data.
+                    selectMarkerByID(markerID).markerInStorage = 1;
+                    var markerObj = selectMarkerByID(markerID);
+                    markerObj.wikiCategoryID = newWikiCategory;
+                    if (selectActiveMarkerByID(markerID)) {
+                      selectActiveMarkerByID(markerID).remove()
+                      moveMarkerToStorage(markerID);
+                    }
+
+                      
+                      $('.addMarkerToWiki').modal('hide');
+
+                      //Update local stored wiki category
+                    resetWikiCategories(newWikiCategory)
+                    
+              
+
+                }
+        });
+
+      }
+    })
+
+    $('.wikiCategoryDropdownButton').dropdown({
       onChange: function(value, text, element) {
 
       	var markerID = "";
@@ -4122,6 +4209,8 @@ $('#articleContent').attr('contenteditable', 'false');
       	} else {
       	markerID = $('.wikiArticleModal').attr('data-marker-id');
     	}
+
+      console.log(modalDropdown, markerID)
 
     	if (selectMarkerByID(markerID)) {
         $.ajax({ 
@@ -4290,6 +4379,10 @@ fetchData();
 
 
  window.onpopstate = function() {
+    var showAllMarkersHash = '#/' + selectedMapID;
+    console.log(showAllMarkersHash, window.location.hash)
+
+    if (window.location.hash !== '#/' + showAllMarkersHash)
      if (window.location.hash.split('/')[1] !== selectedMapID) {
          window.location.reload();
      } else {
