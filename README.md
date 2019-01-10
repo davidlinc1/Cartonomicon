@@ -19,27 +19,102 @@ I hope it is as useful to you as it has been for me! [Join the exclusive Cartono
 
 This installation entails working with webservers and databases, and will be tricky if you've never done that before. I've tested these instructions on a new Digital Ocean Ubuntu 18.04 Droplet, but it's a simple enough stack that it should work regardless of platform.
 
+A more streamlined install process is on the to-do list, once the project is a little further along.
+
 1. Install Apache
 
 2. Install MySQL
 
 3. Install PHP
 
-4. In MySQL, add the following:
-	1. A database labeled `maps_markers`
-	2. A table labeled `maps`
-	3. A table labeled `markers`
-	4. A table labeled `marker_layers`
+4. In MySQL, run the following:
+
+```
+CREATE DATABASE maps_markers;
+USE maps_markers;
+```
+
+```
+CREATE TABLE maps (
+`_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+title text NOT NULL,
+mapImageURL text NOT NULL,
+description text NOT NULL,
+mapType tinytext NOT NULL,
+parentMapID tinytext NOT NULL,
+parentMarkerID tinytext NOT NULL,
+defaultBackgroundColor varchar(6) NOT NULL
+);
+```
+
+```
+CREATE TABLE markers (
+`_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+title text NOT NULL,
+description text NOT NULL,
+elementTypeID int(11) NOT NULL,
+latLng tinytext NOT NULL,
+mapID int(11) NOT NULL,
+customMarkerImage text NOT NULL,
+markerBioImage text NOT NULL,
+markerLayerID int(11) NULL,
+markerInStorage int(11) NOT NULL,
+childMapID int(11) NOT NULL,
+wikiCategoryID int(11) NOT NULL
+);
+```
+
+```
+CREATE TABLE marker_layers (
+`_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+title text NOT NULL,
+description text NOT NULL,
+mapID int(11) NOT NULL
+);
+```
+
+```
+CREATE TABLE wiki_categories (
+`_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+parentID int(11) NULL,
+title text NOT NULL,
+mapID int(11) NULL
+);
+```
 
 5. Go to your webroot and run: 
-	1. `mkdir map`
-	2. `cd map`
-	3. `sudo git pull https://github.com/davidlinc1/Cartonomicon.git`
+
+```
+mkdir map
+cd map
+sudo git init
+sudo git pull https://github.com/davidlinc1/Cartonomicon.git
+```
 
 6. Run the following to ensure Apache can store and access uploaded images: 
-	1. `sudo chmod 755 /var/www/html/map/img/*`
-	1. `sudo chown www-data:www-data /var/www/html/map/img/*`
+```
+sudo chmod 755 /var/www/html/map/img/*
+sudo chown www-data:www-data /var/www/html/map/img/*
+```
 
-7. Edit `api.php` in the `/map/` directory and scroll to the bottom, providing your database username and password. Where it asks for your database, fill in `maps_markers` unless you named the database something else.
+7. Edit `api.php` in the `/map/` directory to input your database username and password so the app can access your database.
+
+From the project 'maps' directory:
+
+```
+nano api.php
+```
+
+Scroll to the bottom of this rather large file (Linux tip: press `CTRL + _` to open nano's search dialog, and press CTRL + V to jump to the bottom!), and where it asks for your database, fill in `maps_markers` unless you named the database something else in step 4.
+
+```
+$config = new Config([
+    'username' => 'database-username-here',
+    'password' => 'database-password-here',
+    'database' => 'maps_markers',
+]);
+```
 
 8. If you access `localhost/map` you should now see your Cartonomicon instance.
+
+If you have any questions, join the [Discord](https://discord.gg/6MbjPqu)!
