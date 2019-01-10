@@ -1257,7 +1257,7 @@ ul.cke_autocomplete_panel {
 
                 <h2 class="ui header">Marker layers</h2>
 
-                <p>This lets you organize different types of markers on the same map, and toggle one or more on or off.</p>
+                <p>Organize different types of markers on the same map. Click "filter" to toggle a single-layer view, showing markers from only your chosen layer on the map.</p>
                 <div class="ui divider"></div>
                 <div class="item" style="
     padding: 0px;
@@ -1352,6 +1352,30 @@ var initialMarkerFocus = 0;
 
 var autoCompleteInitted = false;
 
+function initializeDefaultMap() {
+  var initMapConfirm = confirm("No maps found. Initialize default map?");
+
+                            if (initMapConfirm) {
+                    $.ajax({
+                    url: appInit.mapSource,
+                    method: "POST",
+                    data: {
+                        title: "Kharlian Continent",
+                        mapImageURL: 'img/maps/kharlia.jpg',
+                        description: "A test map for your instance of Cartonomicon!",
+                        mapType: "worldmap",
+                        parentMapID: "",
+                        parentMarkerID : ""
+                    },
+                    success: function(data) {
+                      window.location.hash = "";
+                      window.location.reload();
+                    }
+                });
+
+                }
+}
+
 function fetchData() {
 
 
@@ -1375,6 +1399,17 @@ function fetchData() {
                     mapImageURL: storedMaps[i].mapImageURL
                 })
             }
+
+            if (!storedMaps.length) {
+
+                if (window.location.hash) {
+                  window.location.hash = "";
+                  window.location.reload();
+                } else {
+                  initializeDefaultMap();
+                }
+
+            } else {
 
 
             //Marker layers
@@ -1485,8 +1520,13 @@ function fetchData() {
                             
                             }
 
+                            if (typeof mapObject !== "undefined") {
                             main(mapObject, storedElementTypes, markerSearchIndex);
+                            } else {
 
+                            initializeDefaultMap();
+
+                            }
 
 
                             CKEDITOR.replace( 'markerDescription',
@@ -1508,7 +1548,7 @@ $('#articleContent').attr('contenteditable', 'false');
 
         }
     });
-
+}
   }
 });
 
@@ -2622,7 +2662,7 @@ for (markerLayer in storedMarkerLayers) {
   var template = '<div class="item markerLayerContainer" data-layer-id="'+storedMarkerLayers[markerLayer]._id+'"> \
     <div class="right floated content"> \
       <div class="ui floating dropdown button toggleLayer"> \
-  <span class="text">Toggle</span> \
+  <span class="text">Filter</span> \
   \
 </div> \
       <div class="ui button editMarkerLayer">Edit</div> \
@@ -2668,7 +2708,7 @@ for (markerLayer in storedMarkerLayers) {
   var template = '<div class="item markerLayerContainer" data-layer-id="'+storedMarkerLayers[markerLayer]._id+'"> \
     <div class="right floated content"> \
       <div class="ui floating dropdown button toggleLayer"> \
-  <span class="text">Toggle</span> \
+  <span class="text">Filter</span> \
   \
 </div> \
       <div class="ui button editMarkerLayer">Edit</div> \
@@ -3025,7 +3065,7 @@ function main(mapObject, storedElementTypes, markerSearchIndex) {
       var layerID = $(this).closest('[data-layer-id]').attr('data-layer-id')
       window.location.hash = '#/' + selectedMapID + "/?markerLayer=" + layerID
       
-      $(this).closest('.dropdown').find('.text').text('Toggle');
+      $(this).closest('.dropdown').find('.text').text('Filter');
       $('.markerLayerContainer').removeClass('active');
       $(this).closest('.markerLayerContainer').addClass('active');
 
