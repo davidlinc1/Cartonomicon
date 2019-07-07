@@ -43,7 +43,7 @@ description text NOT NULL,
 mapType tinytext NOT NULL,
 parentMapID tinytext NOT NULL,
 parentMarkerID tinytext NOT NULL,
-defaultBackgroundColor varchar(6) NOT NULL
+defaultBackgroundColor varchar(6) NULL
 );
 ```
 
