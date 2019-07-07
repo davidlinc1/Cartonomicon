@@ -59,8 +59,8 @@ customMarkerImage text NOT NULL,
 markerBioImage text NOT NULL,
 markerLayerID int(11) NULL,
 markerInStorage int(11) NOT NULL,
-childMapID int(11) NOT NULL,
-wikiCategoryID int(11) NOT NULL
+childMapID int(11) NULL,
+wikiCategoryID int(11) NULL
 );
 ```
 
